@@ -53,35 +53,8 @@ export const getNameFromPath = () => {
 
 export const generateGraduationMessage = () => {
   const { name, type } = getNameFromPath();
-  switch (type) {
-    case "lecturer":
-      return {
-        name: `Dear ${name}`,
-        message: `Thank you for your guidance and inspiration throughout my academic journey at RMIT. Your passion for teaching and dedication to students has made a tremendous impact on my education. As I celebrate my graduation, I'm grateful for the knowledge and wisdom you've shared.`,
-      };
-
-    case "toho":
-      return {
-        name: `Dear ${name}`,
-        message: `The TOHO club wouldn't have been the same without you. Thanks for all the good times and support throughout our RMIT days. Really value the experiences we shared and how they've added to my university journey. Appreciate having you as part of this chapter!`,
-      };
-
-    case "capstone":
-      return {
-        name: `Hey ${name}`,
-        message: `Really enjoyed working with you on our Capstone project! Your ideas and dedication made a big difference to our success. Thanks for being such a great teammate - made the whole experience much more enjoyable. Appreciate all your contributions!`,
-      };
-
-    case "best":
-      return {
-        name: `Dear ${name}`,
-        message: `As I prepare to graduate, I want to take a moment to express my heartfelt gratitude for your unwavering support and friendship. Your presence in my life has made this journey at RMIT truly special. Thank you for being there through the ups and downs, and for being an incredible friend.`,
-      };
-    case "friend":
-    default:
-      return {
-        name: `Hey ${name}`,
-        message: `Thanks for making uni more fun! Appreciate all the laughs and good times at RMIT. Catch up soon?`,
-      };
-  }
+  return {
+    name: type === "generic" ? "Hello," : `Dear ${name},`,
+    message: "I’m Thùy Dung. I’d love for you to celebrate my graduation with me and look back on some of the memories from my time at university.",
+  };
 };

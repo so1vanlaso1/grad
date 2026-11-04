@@ -1,4 +1,5 @@
 import { Text, Float, RoundedBox, Image, useTexture } from "@react-three/drei";
+import { graduation } from "../../graduation";
 import { useEffect } from "react";
 import { ClampToEdgeWrapping } from "three";
 
@@ -53,13 +54,13 @@ export default function GraduationCard({ position }: GraduationCardProps) {
         <RoundedBox radius={0.2} args={[5.5, 2.7, 0.1]} position={[0, 0, 0]}>
           <meshPhysicalMaterial
             attach="material"
-            color={"#ffffff"}
+            color={"#573348"}
             emissive={"#ff99cc"}
             emissiveIntensity={0.5}
             envMapIntensity={2}
             // color={
             map={texture}
-            transmission={1} // Full transmission for a glassy, jelly effect
+            transmission={0.58} // Full transmission for a glassy, jelly effect
             roughness={0.05} // Very smooth
             thickness={2} // How “deep” the material appears
             ior={1.3} // Index of refraction, similar to glass/jelly
@@ -72,60 +73,60 @@ export default function GraduationCard({ position }: GraduationCardProps) {
         </RoundedBox>
 
         <mesh position={[-1.5, 0, 0.1]}>
-          <Image url="/assets/koala.jpg" scale={[1.5, 1.5]} />
+          <Image url={graduation.poster} scale={[1.12, 1.99]} toneMapped={false} />
         </mesh>
         <group position={[-0.5, -0.4, 0.1]}>
           <GraduationText
             position={[0, 1.3, 0]}
             fontSize={0.3}
             bold={true}
-            text="TRAN MAI NHUNG"
+            text={graduation.name.toUpperCase()}
           />
 
           <GraduationText
             color="#c0c5c2"
             position={[0, 1, 0]}
             fontSize={0.15}
-            text="Date"
+            text="DATE"
           />
           <GraduationText
             position={[0, 0.8, 0]}
             fontSize={0.2}
             bold={true}
-            text="SESSION 1 APRIL 14, 2025"
+            text={graduation.date.toUpperCase()}
           />
 
           <GraduationText
             color="#c0c5c2"
             position={[0, 0.4, 0]}
             fontSize={0.15}
-            text="Time"
+            text="TIME"
           />
           <GraduationText
             position={[0, 0.2, 0]}
             fontSize={0.2}
             bold={true}
-            text="AFTER 11 AM"
+            text={graduation.time.toUpperCase()}
           />
 
           <GraduationText
             position={[0, -0.2, 0]}
             fontSize={0.15}
             color = "#c0c5c2"
-            text="LOCATION"
+            text="VENUE"
           />
 
           <GraduationText
             position={[0, -0.4, 0]}
             fontSize={0.2}
             bold={true}
-            text="RMIT UNIVERSITY"
+            text="UEH CAMPUS A"
           />
           <GraduationText
             position={[0, -0.65, 0]}
             fontSize={0.2}
             bold={true}
-            text="SGS CAMPUS"
+            text="HALL A.116"
           />
         </group>
       </Float>

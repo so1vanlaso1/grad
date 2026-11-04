@@ -77,6 +77,18 @@ export default function InstructionModal({ isOpen, onClose }: InstructionModalPr
           </div>
         </div>
 
+        <p className="mt-1 text-center text-sm">
+          Based on work by{" "}
+          <a
+            href="https://github.com/Puppychan/graduation-invitation"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline underline-offset-2"
+          >
+            Tran Mai Nhung
+          </a>
+        </p>
+
         {/* Dismiss button */}
         <button
           onClick={onClose}
