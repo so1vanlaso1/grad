@@ -21,7 +21,7 @@ export default function IntroTypeScreen({ onComplete }: Props) {
   } = useMemo(() => {
     return {
       ...generateGraduationMessage(),
-      finalMessage: "You’re invited to Dung’s graduation!",
+      finalMessage: "You’re invited to my graduation!",
     };
   }, []);
 

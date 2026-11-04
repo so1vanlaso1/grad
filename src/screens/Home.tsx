@@ -6,7 +6,7 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Scene from "../components/3d-scenes/ScrollManager";
 import { BottomBar } from "../components/BottomBar";
 import { Vector3 } from "three";
@@ -27,9 +27,9 @@ const chapters = [
   ["02 / MILESTONE", "A Journey to Remember", "I hope to see you on the big day"],
   ["03 / CAMPUS", "Western Sydney University", "where I studied "],
   ["04 / INVITATION", "Join Me on Graduation Day", graduation.date + " · " + graduation.time],
-  ["05 / WITH LOVE", "Letters", "Tap an envelope or choose a recipient"],
+  ["05 / WITH LOVE", "Letters", "Tap an envelope to read the letters"],
   ["06 / PHOTO GALLERY", "Before Graduation", "Pre-graduation album"],
-  ["07 / RSVP", "The Letter Box", "Leave a note for me"],
+  ["07 / MESSAGE", "The Letter Box", "Leave a note for me"],
 ];
 
 export default function Home() {
@@ -45,6 +45,13 @@ export default function Home() {
   const openRsvp = () => setSelection({ type: "rsvp" });
   const { theme } = useTheme();
   const reducedMotion = useReducedMotion();
+  const [portrait, setPortrait] = useState(() => window.matchMedia("(orientation: portrait)").matches);
+  useEffect(() => {
+    const query = window.matchMedia("(orientation: portrait)");
+    const update = () => setPortrait(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   const { sectionPositions, sectionOffsets } = useMemo(() => {
     // Define section positions
@@ -63,13 +70,13 @@ export default function Home() {
       new Vector3(0, 20, 40), // Section 0 (closest to viewer)
       new Vector3(0, -5, 30), // Section 1
       new Vector3(7, -13, 35), // Section 2
-      new Vector3(-15, 0, 20),
+      new Vector3(portrait ? 0 : -15, portrait ? 1 : 0, portrait ? 30 : 20),
       new Vector3(0, 1, 33),
       new Vector3(0, 2.5, 35),
       new Vector3(3, 2.5, 24),
     ];
     return { sectionPositions, sectionOffsets };
-  }, []);
+  }, [portrait]);
 
   const onClickPrevSection = useCallback(() => {
     setIsClickedNavButtons(-1);
@@ -88,7 +95,7 @@ export default function Home() {
             data-active={index === currentSection} />
         ))}
       </div>
-      <Canvas dpr={[1, 2]}>
+      <Canvas dpr={[1, portrait ? 1.25 : 2]}>
         <Suspense fallback={<CanvasLoader />}>
           <Scene
             reducedMotion={reducedMotion}
@@ -135,9 +142,9 @@ export default function Home() {
         <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue" />
 
         {/* Post-processing bloom for the glow */}
-        <EffectComposer>
+        {!portrait && <EffectComposer>
           <Bloom luminanceThreshold={0.85} intensity={0.27} radius={1} />
-        </EffectComposer>
+        </EffectComposer>}
       </Canvas>
       <header className="chapter-heading" aria-live="polite">
         <p>{chapter}</p>

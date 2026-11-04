@@ -48,9 +48,9 @@ export default function RsvpForm() {
           <label htmlFor="rsvp-name">Your name</label>
           <input id="rsvp-name" name="name" autoComplete="name" required pattern={".*\\S.*"} maxLength={80} />
           <button type="submit" disabled={status === "sending"}>
-            {status === "sending" ? "Sending…" : "Send RSVP"}
+            {status === "sending" ? "Sending…" : "Send"}
           </button>
-          {status === "error" && (
+            {status === "error" && (
             <p role="alert">We couldn’t confirm your reply. Your entries are still here. Please try again.</p>
           )}
         </form>

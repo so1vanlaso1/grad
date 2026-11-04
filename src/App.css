@@ -26,6 +26,26 @@
   text-align: center;
 }
 
+.music-toggle {
+  position: fixed;
+  top: max(0.7rem, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #c29d78;
+  border-radius: 50%;
+  background: #502236;
+  color: #fff6e9;
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+.music-toggle:hover { background: #843c52; }
+.music-toggle:focus-visible { outline: 3px solid #e9b777; outline-offset: 3px; }
+
 @layer base {
   @apply box-border m-0 p-0;
 }
