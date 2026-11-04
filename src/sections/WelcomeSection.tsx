@@ -65,7 +65,10 @@ export default function WelcomeSection({
         <CandyCluster count={portrait ? 10 : 20} />
 
         {/* Cotton candy clouds */}
-        {!portrait && <>
+        {portrait ? <>
+          <CottonCandy position={[-7, -3, -9]} color="#ffccff" scale={0.65} />
+          <CottonCandy position={[7, -4, -9]} color="#ffaadd" scale={0.65} />
+        </> : <>
         {/* Left Side */}
         <CottonCandy position={[-10, -2, -3]} color="#ffccff" scale={2.5} />
         {/* Right Side */}

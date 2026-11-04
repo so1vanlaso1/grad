@@ -291,3 +291,36 @@
 }
 .rsvp-form button[type="submit"] { margin-top: 0.35rem; }
 .rsvp-form button:disabled { opacity: 0.65; cursor: wait; }
+
+.comet-sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sky-comet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(85px, 23vw, 250px);
+  height: 3px;
+  transform-origin: right center;
+  opacity: 0;
+  border-radius: 100% 50% 50% 100%;
+  background: linear-gradient(90deg, transparent, #da95cc55 45%, #ffc4d7 82%, #fff4d9);
+  box-shadow: 7px 0 12px -2px #ffb8d6;
+}
+
+.sky-comet::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #fff9e9;
+  box-shadow: 0 0 7px 2px #ffd0df, 0 0 18px 5px #ed98bc;
+}

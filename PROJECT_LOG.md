@@ -129,3 +129,9 @@
 - ESLint and the production build passed. The build retained the existing dependency eval and large bundle warnings. Playback has not been verified in a browser.
 =======
 
+
+## Restored phone scenery and comet · 05/11/2026
+
+- Restored smaller clouds, grass and blossom trees for portrait screens after these elements were absent in the previous mobile layout.
+- Restored a randomly timed glowing comet with a fading tail. The effect respects reduced motion and does not run in hidden tabs.
+- Build and lint passed. Chromium at 390 × 844 navigated the first four scenes without JavaScript errors. Comet animation and reduced-motion behavior passed checks at 390 × 844 and 1365 × 768. Physical-device performance remains unverified.

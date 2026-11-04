@@ -1,3 +1,4 @@
+import SkyComet from "../components/SkyComet";
 import {
   Environment,
   PerspectiveCamera,
@@ -146,6 +147,7 @@ export default function Home() {
           <Bloom luminanceThreshold={0.85} intensity={0.27} radius={1} />
         </EffectComposer>}
       </Canvas>
+      {!reducedMotion && <SkyComet />}
       <header className="chapter-heading" aria-live="polite">
         <p>{chapter}</p>
         <h1>{title}</h1>
