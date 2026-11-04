@@ -1,4 +1,5 @@
-import { Float, RoundedBox, Sparkles } from "@react-three/drei";
+import MobileFriendlySparkles from "../components/3d-shapes/MobileFriendlySparkles";
+import { Float, RoundedBox } from "@react-three/drei";
 import { Block, Stage, type Point } from "../components/3d-shapes/GraduationStage";
 
 export default function LetterBoxSection({ position, active, reducedMotion, onOpen }: {
@@ -14,7 +15,7 @@ export default function LetterBoxSection({ position, active, reducedMotion, onOp
       <Block position={[0, -1.84, 0]} size={[2.3, 1.08, 1.8]} color="#774459" />
       <pointLight position={[0, 3, 4]} color="#ffcf9f" intensity={24} distance={10} />
       {active && !reducedMotion && (
-        <Sparkles count={36} position={[0, 1, -0.5]} scale={[9, 5, 4]} size={3.4} speed={0.24} color="#ffe4af" />
+        <MobileFriendlySparkles count={36} position={[0, 1, -0.5]} scale={[9, 5, 4]} size={3.4} speed={0.24} color="#ffe4af" />
       )}
       <group onClick={active ? (event) => { event.stopPropagation(); onOpen(); } : undefined}>
         <RoundedBox args={[4.7, 3.35, 2.65]} radius={0.27} smoothness={3} position={[0, 0.38, 0]}>

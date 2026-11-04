@@ -16,6 +16,7 @@ import KeepsakeDialog, { type Selection } from "../components/KeepsakeDialog";
 import { album, graduation, letters } from "../graduation";
 import TopBar from "../components/TopBar";
 import useReducedMotion from "../utils/useReducedMotion";
+import useMobileGraphics from "../utils/useMobileGraphics";
 
 
 const galleryRooms = ["Back Then", "Beneath the Trees", "Flowers and Graduation Gowns", "The Final Frame"];
@@ -68,6 +69,7 @@ export default function Home() {
   const openRsvp = () => setSelection({ type: "rsvp" });
   const { theme } = useTheme();
   const reducedMotion = useReducedMotion();
+  const mobileGraphics = useMobileGraphics();
 
   const onClickPrevSection = useCallback(() => {
     setIsClickedNavButtons(-1);
@@ -106,11 +108,11 @@ export default function Home() {
             <Stars
               radius={300} // Radius of the inner sphere (default=100)
               depth={60} // Depth of area where stars should fit (default=50)
-              count={5000} // Amount of stars (default=5000)
-              factor={10} // Scale factor of the stars (default=4)
+              count={mobileGraphics ? 900 : 5000} // Fewer stars on mobile
+              factor={mobileGraphics ? 5 : 10} // Lower intensity on mobile
               saturation={0} // Saturation 0-1 (default=0)
-              fade // Faded dots
-              speed={1} // Rotation speed
+              fade={!mobileGraphics}
+              speed={mobileGraphics ? 0 : 1} // Static on mobile
             />
           )}
           <Environment files="/textures/venice_sunset_1k.hdr" />
@@ -124,9 +126,11 @@ export default function Home() {
 
         <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue" />
 
-        <EffectComposer multisampling={0}>
-          <Bloom luminanceThreshold={0.85} intensity={0.27} radius={1} />
-        </EffectComposer>
+        {!mobileGraphics && (
+          <EffectComposer multisampling={0}>
+            <Bloom luminanceThreshold={0.85} intensity={0.27} radius={1} />
+          </EffectComposer>
+        )}
       </Canvas>
       {!reducedMotion && <SkyComet />}
       <header className="chapter-heading" aria-live="polite">

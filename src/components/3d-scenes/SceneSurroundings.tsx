@@ -1,4 +1,5 @@
-import { Sparkles } from "@react-three/drei";
+import MobileFriendlySparkles from "../3d-shapes/MobileFriendlySparkles";
+
 import { Block, Stage, type Point } from "../3d-shapes/GraduationStage";
 
 const brass = "#bd8957";
@@ -55,7 +56,7 @@ export default function SceneSurroundings({ scene, position, active, reducedMoti
   return (
     <Stage position={position}>
       {active && !reducedMotion && (
-        <Sparkles count={scene === 5 ? 23 : 34} size={3.5} speed={0.24}
+        <MobileFriendlySparkles count={scene === 5 ? 23 : 34} size={3.5} speed={0.24}
           position={[0, scene === 5 ? 0.5 : 1.4, scene === 5 ? -2 : -3]}
           scale={scene === 5 ? [14, 5, 3] : [19, 9, 7]} color={accents[scene]} />
       )}

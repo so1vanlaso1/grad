@@ -1,4 +1,5 @@
-import { Float, Html, RoundedBox, Sparkles } from "@react-three/drei";
+import MobileFriendlySparkles from "../components/3d-shapes/MobileFriendlySparkles";
+import { Float, Html, RoundedBox } from "@react-three/drei";
 import { Shape } from "three";
 import { letters } from "../graduation";
 import { Stage, type Point } from "../components/3d-shapes/GraduationStage";
@@ -10,7 +11,7 @@ const flap = new Shape().moveTo(-1.7, 0.95).lineTo(0, -0.22).lineTo(1.7, 0.95).c
 export default function LettersSection({ position, active, onOpen }: { position: Point; active: boolean; onOpen: (index: number) => void }) {
   return (
     <Stage position={position}>
-      <Sparkles count={38} scale={[14, 6, 4]} size={3} color="#e3b578" />
+      <MobileFriendlySparkles count={38} scale={[14, 6, 4]} size={3} color="#e3b578" />
       {letters.map(({ title, color }, index) => {
         const x = (index - 1) * 4.25;
         return (

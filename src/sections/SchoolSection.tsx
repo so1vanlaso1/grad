@@ -1,4 +1,5 @@
-import { Sparkles } from "@react-three/drei";
+import MobileFriendlySparkles from "../components/3d-shapes/MobileFriendlySparkles";
+
 import SchoolCard from "../components/3d-shapes/SchoolCard";
 import { Tree } from "../components/3d-models/Tree";
 import { Sakura } from "../components/3d-models/Sakura";
@@ -21,7 +22,7 @@ export default function SchoolSection({ position, reducedMotion }: { position: P
       <Sakura position={[10.8, -6.5, -4]} scale={0.31} />
       <Grass position={[0, -6.65, -2.5]} scale={[29, 2.5, 17]} />
 
-      <Sparkles count={65} scale={[8, 6, 1]} size={10} speed={0.3} color="#d956f3" position={[0, 0, 0.5]} />
+      <MobileFriendlySparkles count={65} scale={[8, 6, 1]} size={10} speed={0.3} color="#d956f3" position={[0, 0, 0.5]} />
       <pointLight position={[3, 3, 3]} intensity={1} color="#d39afc" />
       <pointLight position={[-3, -3, 3]} intensity={0.8} color="#ffc1e3" />
     </Stage>

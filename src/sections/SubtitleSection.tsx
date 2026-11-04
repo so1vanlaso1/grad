@@ -1,8 +1,9 @@
+import MobileFriendlySparkles from "../components/3d-shapes/MobileFriendlySparkles";
 import { useThree } from "@react-three/fiber";
 import GumText from "../components/3d-shapes/GumText";
 import CherryBlossomPetals from "../components/3d-shapes/CherryBlossomPetal";
 import CottonCandy from "../components/3d-shapes/CottonCandy";
-import { Sparkles } from "@react-three/drei";
+
 import { Sakura } from "../components/3d-models/Sakura";
 import { WoodenBench } from "../components/3d-models/WoodenBench";
 import { Koala } from "../components/3d-models/Koala";
@@ -34,7 +35,7 @@ export default function SubtitleSection({
       <pointLight position={[-2, -7, 10]} intensity={2} color="#efa8a8" />
 
       {/* Sparkles for magical effect */}
-      <Sparkles count={95} scale={24} size={7} speed={0.3} color="#ffffff" />
+      <MobileFriendlySparkles count={95} scale={24} size={7} speed={0.3} color="#ffffff" />
     </Stage>
   );
 }

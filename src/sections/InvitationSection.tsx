@@ -1,4 +1,5 @@
-import { Sparkles } from "@react-three/drei";
+import MobileFriendlySparkles from "../components/3d-shapes/MobileFriendlySparkles";
+
 import GraduationCard from "../components/3d-shapes/GraduationCard";
 import CherryBlossomPetals from "../components/3d-shapes/CherryBlossomPetal";
 import { Sakura } from "../components/3d-models/Sakura";
@@ -16,7 +17,7 @@ export default function InvitationSection({ position, onOpen }: { position: Poin
         <GraduationCard position={[0, 0, -2.5]} />
       </group>
       <CherryBlossomPetals count={55} />
-      <Sparkles color="#ff99ec" size={8} scale={24} count={105} speed={0.5} />
+      <MobileFriendlySparkles color="#ff99ec" size={8} scale={24} count={105} speed={0.5} />
       <Sakura position={[-9.2, -5, -5]} scale={[0.28, 0.35, 0.28]} />
       <Tree position={[-8, -5.3, -8]} scale={[0.07, 0.09, 0.07]} />
       <Tree position={[-9, -5.3, -7]} scale={[0.07, 0.08, 0.07]} />

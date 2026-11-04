@@ -4,6 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { DoubleSide, Euler, Group, Vector3 } from "three";
 import { GraduationCap } from "../3d-models/GraduationCap";
+import useMobileGraphics from "../../utils/useMobileGraphics";
 
 const defaultColors = ["#d39afc", "#ffc1e3", "#ffffff", "#2e2e87"];
 
@@ -19,16 +20,18 @@ export function RMITConfetti({
   colors = defaultColors,
 }: RMITConfettiProps) {
   const groupRef = useRef<Group>(null);
+  const mobileGraphics = useMobileGraphics();
+  const particleCount = mobileGraphics ? Math.min(count, 18) : count;
 
   // Load graduation hat model (adjust path)
   const logoTexture = useTexture(emblem);
 
   const { renderedParticles, particles } = useMemo(() => {
     const items = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < particleCount; i++) {
       const type = Math.random(); // 0 - 1
       // 0 - 0.1: hat, 0.1 - 0.66: logo, 0.66 - 1: confetti
-      const typeString = type < 0.1 ? "hat" : type < 0.66 ? "logo" : "confetti";
+      const typeString = mobileGraphics ? "confetti" : type < 0.1 ? "hat" : type < 0.66 ? "logo" : "confetti";
       items.push({
         type: typeString,
         position: new Vector3(
@@ -42,9 +45,11 @@ export function RMITConfetti({
           Math.random() * Math.PI
         ),
         scale:
-          typeString == "hat"
-            ? Math.random() * 0.1 + 0.01
-            : Math.random() * 0.18 + 0.08,
+          mobileGraphics
+            ? Math.random() * 0.19 + 0.37
+            : typeString === "hat"
+              ? Math.random() * 0.1 + 0.01
+              : Math.random() * 0.18 + 0.08,
         color: colors[Math.floor(Math.random() * colors.length)],
         speed: Math.random() * 0.1 + 0.02,
       });
@@ -88,13 +93,15 @@ export function RMITConfetti({
               scale={p.scale}
             >
               <planeGeometry args={[0.35, 0.8]} />
-              <meshStandardMaterial color={p.color} side={DoubleSide} />
+              {mobileGraphics
+                ? <meshBasicMaterial color={p.color} side={DoubleSide} transparent opacity={0.8} depthWrite={false} />
+                : <meshStandardMaterial color={p.color} side={DoubleSide} />}
             </mesh>
           );
       }
     });
     return { renderedParticles, particles: items };
-  }, [count, colors, logoTexture]);
+  }, [particleCount, mobileGraphics, colors, logoTexture]);
 
   useFrame((state, delta) => {
     if (reducedMotion) return;

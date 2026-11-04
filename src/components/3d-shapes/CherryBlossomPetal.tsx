@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
-import { MathUtils, Mesh } from "three";
+import { DoubleSide, MathUtils, Mesh } from "three";
 
 interface CherryBlossomPetalProps {
   position?: [number, number, number];
@@ -38,7 +38,7 @@ export function CherryBlossomPetal({
   return (
     <mesh ref={petalRef} position={position} rotation={rotation} scale={scale}>
       {/* Petal shape */}
-      <meshStandardMaterial color="#ffcce6" roughness={0.3} metalness={0.2} />
+      <meshStandardMaterial color="#ffcce6" roughness={0.3} metalness={0.2} side={DoubleSide} />
       <circleGeometry args={[0.3, 5]} />
     </mesh>
   );

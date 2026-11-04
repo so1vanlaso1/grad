@@ -1,8 +1,9 @@
+import MobileFriendlySparkles from "../components/3d-shapes/MobileFriendlySparkles";
 import GumText from "../components/3d-shapes/GumText";
 import CherryBlossomPetals from "../components/3d-shapes/CherryBlossomPetal";
 import CandyCluster from "../components/3d-shapes/Candy";
 import CottonCandy from "../components/3d-shapes/CottonCandy";
-import { Sparkles } from "@react-three/drei";
+
 import { useMemo } from "react";
 import { bubbleColors } from "../utils/color";
 import JellyCandy from "../components/3d-shapes/JellyCandy";
@@ -48,7 +49,7 @@ export default function WelcomeSection({ position }: { position: Point }) {
       <CottonCandy position={[-5.2, 5.5, -7]} scale={1.5} color="#ffccee" />
       <CottonCandy position={[5.8, 5.6, -7]} scale={1.35} color="#ffaadd" />
       <CottonCandy position={[0, 7.8, -9]} scale={1.7} color="#ffbbee" />
-      <Sparkles count={80} scale={20} size={8} speed={0.3} color="#ffffff" />
+      <MobileFriendlySparkles count={80} scale={20} size={8} speed={0.3} color="#ffffff" />
     </Stage>
   );
 }
