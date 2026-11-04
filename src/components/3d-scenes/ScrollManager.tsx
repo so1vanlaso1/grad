@@ -116,15 +116,17 @@ function CustomCameraControls({
       makeDefault
       smoothTime={0.32}
       restThreshold={0.12}
-      maxDistance={sectionOffsets[destination ?? currentSection].length() * 1.2}
-      minDistance={sectionOffsets[destination ?? currentSection].length() * 0.88}
-      maxPolarAngle={Math.PI * 0.58}
-      minPolarAngle={Math.PI / 3}
-      // Add rotation constraints for each section
-      maxAzimuthAngle={Math.PI / 5} // Limit horizontal rotation
-      minAzimuthAngle={-Math.PI / 5}
-      // dampingFactor={0.1} // Smoother camera movement
-      // draggingDampingFactor={0.1}
+      // Allow guests to explore details without restricting zoom to a narrow band.
+      // Keep a minimum distance so the camera cannot pass through the stage.
+      maxDistance={sectionOffsets[destination ?? currentSection].length() * 2.15}
+      minDistance={sectionOffsets[destination ?? currentSection].length() * 0.43}
+      // Wider orbit, while preventing upside-down and rear-of-stage views.
+      maxPolarAngle={Math.PI * 0.69}
+      minPolarAngle={Math.PI * 0.2}
+      maxAzimuthAngle={Math.PI * 0.44}
+      minAzimuthAngle={-Math.PI * 0.44}
+      dollySpeed={1.15}
+      truckSpeed={1.1}
     />
   );
 }

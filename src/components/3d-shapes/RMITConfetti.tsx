@@ -21,7 +21,7 @@ export function RMITConfetti({
 }: RMITConfettiProps) {
   const groupRef = useRef<Group>(null);
   const mobileGraphics = useMobileGraphics();
-  const particleCount = mobileGraphics ? Math.min(count, 18) : count;
+  const particleCount = mobileGraphics ? Math.min(count, 48) : count;
 
   // Load graduation hat model (adjust path)
   const logoTexture = useTexture(emblem);
@@ -35,9 +35,9 @@ export function RMITConfetti({
       items.push({
         type: typeString,
         position: new Vector3(
-          (Math.random() - 0.5) * 30,
-          Math.random() * 20 + 10,
-          (Math.random() - 0.5) * 30
+          (Math.random() - 0.5) * (mobileGraphics ? 20 : 30),
+          mobileGraphics ? Math.random() * 15 + 1 : Math.random() * 20 + 10,
+          (Math.random() - 0.5) * (mobileGraphics ? 12 : 30)
         ),
         rotation: new Euler(
           Math.random() * Math.PI,
@@ -109,7 +109,9 @@ export function RMITConfetti({
     groupRef.current?.children.forEach((child, i) => {
       const p = particles[i];
       p.position.y -= p.speed * step;
-      if (p.position.y < -10) p.position.y = 20;
+      if (p.position.y < (mobileGraphics ? -8 : -10)) {
+        p.position.y = mobileGraphics ? 16 : 20;
+      }
 
       // Slight swaying motion
       p.position.x += Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.01 * step;
