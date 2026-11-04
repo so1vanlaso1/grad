@@ -14,30 +14,33 @@ export function Grass(props: GeneralGroupProps) {
   const { nodes, materials } = useGLTF('/models/grass.glb')
   return (
     <group {...props} dispose={null}>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={(nodes.Object_4 as Mesh).geometry}
-        material={materials.brush_Petal}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={(nodes.Object_6 as Mesh).geometry}
-        material={materials.brush_Petal}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={(nodes.Object_8 as Mesh).geometry}
-        material={materials.brush_Petal}
-      />
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={(nodes.Object_10 as Mesh).geometry}
-        material={materials.brush_Petal}
-      />
+      {/* The source meshes sit left and in front of their origin. Anchor the patch at its base center. */}
+      <group position={[0.199, 0.06, -0.45]}>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={(nodes.Object_4 as Mesh).geometry}
+          material={materials.brush_Petal}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={(nodes.Object_6 as Mesh).geometry}
+          material={materials.brush_Petal}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={(nodes.Object_8 as Mesh).geometry}
+          material={materials.brush_Petal}
+        />
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={(nodes.Object_10 as Mesh).geometry}
+          material={materials.brush_Petal}
+        />
+      </group>
     </group>
   )
 }

@@ -28,7 +28,7 @@
 
 .music-toggle {
   position: fixed;
-  top: max(0.7rem, env(safe-area-inset-top));
+  top: calc(0.7rem + env(safe-area-inset-top));
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -76,8 +76,10 @@
 @layer components {
   .bar-container {
     @apply px-2 md:px-6 lg:px-8 w-full;
-    @apply py-3 lg:py-10;
+    padding: calc(0.7rem + env(safe-area-inset-top)) max(0.7rem, env(safe-area-inset-right)) 0
+      max(0.7rem, env(safe-area-inset-left));
   }
+  .bar-container > button { min-height: 44px; min-width: 44px; display: grid; place-items: center; }
   .bar-component-container {
     @apply flex gap-2 lg:gap-4;
   }
@@ -123,7 +125,7 @@
 .chapter-heading {
   pointer-events: none;
   position: absolute;
-  top: clamp(3.5rem, 10vh, 7rem);
+  top: max(calc(3.75rem + env(safe-area-inset-top)), clamp(3.75rem, 10dvh, 7rem));
   inset-inline: 0;
   padding: 0 1rem;
   text-align: center;
@@ -165,14 +167,24 @@
   background: #502236;
   color: #fff6e9;
   border-radius: 999px;
-  min-height: 42px;
-  min-width: 42px;
+  min-height: 44px;
+  min-width: 44px;
   padding: 0.35rem 0.85rem;
   cursor: pointer;
   font-size: clamp(0.69rem, 2.7vw, 0.88rem);
 }
 
 .chapter-navigation button { display: grid; place-items: center; }
+.chapter-actions { flex-wrap: wrap; }
+.chapter-heading { text-shadow: 0 1px 12px #fff6e9d0; }
+.dark .chapter-heading { text-shadow: 0 1px 12px #1e111b; }
+
+@media (max-height: 500px) {
+  .chapter-heading h1 { font-size: clamp(1.35rem, 4vw, 2rem); margin-block: 0.1rem; }
+  .chapter-heading { top: calc(3.6rem + env(safe-area-inset-top)); }
+  .chapter-actions { bottom: calc(3.85rem + env(safe-area-inset-bottom)); }
+  .chapter-navigation { bottom: calc(0.55rem + env(safe-area-inset-bottom)); }
+}
 .chapter-actions button:disabled, .chapter-navigation button:disabled { opacity: 0.45; cursor: default; }
 .chapter-actions button:hover:enabled, .chapter-navigation button:hover:enabled, .keepsake-dialog button:hover { background: #843c52; }
 
@@ -279,6 +291,7 @@
   padding: 0.5rem 0.65rem;
   background: #fffaf3;
   color: #421c2a;
+  font-size: 1rem;
 }
 .rsvp-form textarea { resize: vertical; }
 .rsvp-form button {

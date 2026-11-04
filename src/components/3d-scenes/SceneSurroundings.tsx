@@ -81,11 +81,11 @@ export default function SceneSurroundings({ scene, position, active, reducedMoti
 
       {scene === 2 && <>
         {[-1, 0, 1].map((step) => (
-          <Block key={step} position={[2, -7.48 - step * 0.16, 5.4 + step * 0.63]}
-            size={[6.4 + step * 0.35, 0.28, 0.65]} color="#bb9283" />
+          <Block key={step} position={[0.5, -6.91 - step * 0.19, 4.75 + step * 0.63]}
+            size={[6.4 + step * 0.35, 0.29, 0.74]} color="#bb9283" />
         ))}
         {sides.map((side) => (
-          <Lantern key={side} position={[2 + side * 5.6, -6.9, 2.7]} color="#ffe0bd" />
+          <Lantern key={side} position={[0.5 + side * 5.2, -5.9, 3]} color="#ffe0bd" />
         ))}
       </>}
 

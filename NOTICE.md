@@ -12,6 +12,7 @@ All glb file models are sourced from Sketchfab, under CC-BY 4.0 license.
 
 ### Textures
 - Gradient textures from [uiGradients](https://uigradients.com/) under MIT License
+- [Venice Sunset](https://polyhaven.com/a/venice_sunset) by Greg Zaal, distributed by Poly Haven under CC0.
 
 ### Design
 - 3D Text Design and its font: https://codesandbox.io/p/sandbox/r3f-drei-3d-text-de86ih under MIT License

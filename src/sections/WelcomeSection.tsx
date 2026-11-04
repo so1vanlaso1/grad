@@ -1,4 +1,3 @@
-import { Physics } from "@react-three/cannon";
 import GumText from "../components/3d-shapes/GumText";
 import CherryBlossomPetals from "../components/3d-shapes/CherryBlossomPetal";
 import CandyCluster from "../components/3d-shapes/Candy";
@@ -7,15 +6,9 @@ import { Sparkles } from "@react-three/drei";
 import { useMemo } from "react";
 import { bubbleColors } from "../utils/color";
 import JellyCandy from "../components/3d-shapes/JellyCandy";
-import { useThree } from "@react-three/fiber";
+import { Stage, type Point } from "../components/3d-shapes/GraduationStage";
 
-// Welcome Section
-export default function WelcomeSection({
-  position,
-}: {
-  position: [number, number, number];
-}) {
-  const portrait = useThree(({ size }) => size.width < size.height);
+export default function WelcomeSection({ position }: { position: Point }) {
   // Create a bunch of bubbles for decoration
   const bubbles = useMemo(() => {
     const arr = Array.from({ length: 30 }, () => {
@@ -43,49 +36,19 @@ export default function WelcomeSection({
     ));
   }, []);
   return (
-    <group position={position}>
-      <spotLight
-        position={[10, 10, position[2]]}
-        angle={0.15}
-        penumbra={1}
-        intensity={1}
-      />
-
-      <Physics gravity={[0, -0.2, 0]}>
-        {/* Bubbles */}
-        {bubbles}
-        {/* Main 3D Text */}
-        {!portrait && <GumText position={[0, 2, 0]} size={1.35} text="07.11.2026" />}
-        {/* <GumText position={[0, -2, 0]} text="DREAMS" /> */}
-
-        {/* Cherry blossom petals */}
-        <CherryBlossomPetals count={portrait ? 15 : 50} />
-
-        {/* Candy elements */}
-        <CandyCluster count={portrait ? 10 : 20} />
-
-        {/* Cotton candy clouds */}
-        {portrait ? <>
-          <CottonCandy position={[-7, -3, -9]} color="#ffccff" scale={0.65} />
-          <CottonCandy position={[7, -4, -9]} color="#ffaadd" scale={0.65} />
-        </> : <>
-        {/* Left Side */}
-        <CottonCandy position={[-10, -2, -3]} color="#ffccff" scale={2.5} />
-        {/* Right Side */}
-        <CottonCandy position={[10, -2, -3]} color="#ffccff" scale={2.5} />
-        {/* Bottom */}
-        {!portrait && <CottonCandy position={[0, -7, -10]} scale={1.5} color="#ffccff" />}
-        <CottonCandy position={[5, -7, -5]} scale={1.5} color="#ffccff" />
-        {!portrait && <CottonCandy position={[0, -7, -10]} scale={1.5} color="#ffccff" />}
-        {/* Top */}
-        <CottonCandy position={[-5, 5, -5]} color="#ffccee" scale={1.5} />
-        <CottonCandy position={[5, 6, -3]} color="#ffaadd" scale={1.2} />
-        <CottonCandy position={[0, 8, -6]} color="#ffbbee" scale={2} />
-        </>}
-      </Physics>
-
-      {/* Sparkles for magical effect */}
-      <Sparkles count={portrait ? 30 : 100} scale={20} size={10} speed={0.3} color="#ffffff" />
-    </group>
+    <Stage position={position}>
+      {bubbles}
+      <GumText position={[0, 2, 0]} size={1.35} text="07.11.2026" />
+      <CherryBlossomPetals count={36} />
+      <CandyCluster count={16} />
+      <CottonCandy position={[-8.8, -1.5, -5]} scale={1.15} color="#ffccff" />
+      <CottonCandy position={[8.8, -2.5, -5]} scale={1.15} color="#ffaadd" />
+      <CottonCandy position={[-3.8, -6, -8]} scale={0.9} color="#ffccee" />
+      <CottonCandy position={[4.7, -7, -6]} scale={1.05} color="#ffccff" />
+      <CottonCandy position={[-5.2, 5.5, -7]} scale={0.9} color="#ffccee" />
+      <CottonCandy position={[5.8, 5.6, -7]} scale={0.8} color="#ffaadd" />
+      <CottonCandy position={[0, 7.8, -9]} scale={1} color="#ffbbee" />
+      <Sparkles count={80} scale={20} size={8} speed={0.3} color="#ffffff" />
+    </Stage>
   );
 }

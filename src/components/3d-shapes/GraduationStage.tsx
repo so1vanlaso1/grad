@@ -1,13 +1,11 @@
 import { RoundedBox, useTexture } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
 import { SRGBColorSpace } from "three";
 import type { ReactNode } from "react";
 
 export type Point = [number, number, number];
 
 export function Stage({ position, children }: { position: Point; children: ReactNode }) {
-  const aspect = useThree(({ size }) => size.width / size.height);
-  return <group position={position} scale={Math.min(1, aspect / 1.05)}>{children}</group>;
+  return <group position={position}>{children}</group>;
 }
 
 export function Block({ position, size, color }: { position: Point; size: Point; color: string }) {

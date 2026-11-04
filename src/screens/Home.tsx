@@ -1,19 +1,16 @@
 import SkyComet from "../components/SkyComet";
 import {
   Environment,
-  PerspectiveCamera,
-  Preload,
   Stars,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useState } from "react";
 import Scene from "../components/3d-scenes/ScrollManager";
 import { BottomBar } from "../components/BottomBar";
-import { Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { useTheme } from "../context/theme-context";
 import { twMerge } from "tailwind-merge";
-import CanvasLoader from "../components/3d-scenes/CanvasLoader";
 import "../utils/preload-assets";
 import KeepsakeDialog, { type Selection } from "../components/KeepsakeDialog";
 import { album, graduation, letters } from "../graduation";
@@ -33,6 +30,31 @@ const chapters = [
   ["07 / MESSAGE", "The Letter Box", "Leave a note for me"],
 ];
 
+const sectionPositions = [
+  new Vector3(0, 0, 90),
+  new Vector3(60, 0, 60),
+  new Vector3(120, 0, 30),
+  new Vector3(160, 0, 0),
+  new Vector3(213, 0, -30),
+  new Vector3(266, 0, -62),
+  new Vector3(319, 0, -94),
+];
+
+const sectionOffsets = [
+  new Vector3(0, 20, 40),
+  new Vector3(0, 3, 36),
+  new Vector3(4, -2, 40),
+  new Vector3(-4, 1, 34),
+  new Vector3(0, 1, 30),
+  new Vector3(0, 2.5, 32),
+  new Vector3(3, 2.5, 24),
+];
+const initialCamera = {
+  fov: 30,
+  position: sectionPositions[0].clone().add(sectionOffsets[0]).toArray(),
+  rotation: new Euler(-Math.atan2(sectionOffsets[0].y, sectionOffsets[0].z), 0, 0),
+};
+
 export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const [isClickedNavButtons, setIsClickedNavButtons] = useState<-1 | 0 | 1>(0); // -1: Prev, 0: None, 1: Next
@@ -46,38 +68,6 @@ export default function Home() {
   const openRsvp = () => setSelection({ type: "rsvp" });
   const { theme } = useTheme();
   const reducedMotion = useReducedMotion();
-  const [portrait, setPortrait] = useState(() => window.matchMedia("(orientation: portrait)").matches);
-  useEffect(() => {
-    const query = window.matchMedia("(orientation: portrait)");
-    const update = () => setPortrait(query.matches);
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  const { sectionPositions, sectionOffsets } = useMemo(() => {
-    // Define section positions
-    const sectionPositions = [
-      new Vector3(0, 0, 90),
-      new Vector3(60, 0, 60),
-      new Vector3(120, 0, 30),
-      new Vector3(160, 0, 0),
-      new Vector3(213, 0, -30),
-      new Vector3(266, 0, -62),
-      new Vector3(319, 0, -94),
-    ];
-
-    // Camera offsets for better viewing angles
-    const sectionOffsets = [
-      new Vector3(0, 20, 40), // Section 0 (closest to viewer)
-      new Vector3(0, -5, 30), // Section 1
-      new Vector3(7, -13, 35), // Section 2
-      new Vector3(portrait ? 0 : -15, portrait ? 1 : 0, portrait ? 30 : 20),
-      new Vector3(0, 1, 33),
-      new Vector3(0, 2.5, 35),
-      new Vector3(3, 2.5, 24),
-    ];
-    return { sectionPositions, sectionOffsets };
-  }, [portrait]);
 
   const onClickPrevSection = useCallback(() => {
     setIsClickedNavButtons(-1);
@@ -96,8 +86,7 @@ export default function Home() {
             data-active={index === currentSection} />
         ))}
       </div>
-      <Canvas dpr={[1, portrait ? 1.25 : 2]}>
-        <Suspense fallback={<CanvasLoader />}>
+      <Canvas dpr={[1, 1.5]} camera={initialCamera}>
           <Scene
             reducedMotion={reducedMotion}
             galleryPage={page}
@@ -112,8 +101,6 @@ export default function Home() {
             sectionPositions={sectionPositions}
             sectionOffsets={sectionOffsets}
           />
-          <Preload all />
-        </Suspense>
         <Suspense fallback={null}>
           {theme.name === "dark" && (
             <Stars
@@ -126,13 +113,8 @@ export default function Home() {
               speed={1} // Rotation speed
             />
           )}
-          <Environment preset="sunset" />
+          <Environment files="/textures/venice_sunset_1k.hdr" />
         </Suspense>
-        <PerspectiveCamera
-          makeDefault
-          fov={30}
-          position={[0, 0, sectionPositions[0].z + sectionOffsets[0].z]}
-        />
 
         <ambientLight intensity={0.7} />
         <directionalLight position={[3, 3, 3]} intensity={1} />
@@ -142,10 +124,9 @@ export default function Home() {
 
         <hemisphereLight intensity={0.2} color="#eaeaea" groundColor="blue" />
 
-        {/* Post-processing bloom for the glow */}
-        {!portrait && <EffectComposer>
+        <EffectComposer multisampling={0}>
           <Bloom luminanceThreshold={0.85} intensity={0.27} radius={1} />
-        </EffectComposer>}
+        </EffectComposer>
       </Canvas>
       {!reducedMotion && <SkyComet />}
       <header className="chapter-heading" aria-live="polite">

@@ -1,5 +1,6 @@
 import { CameraControls } from "@react-three/drei";
-import { useCallback, useEffect, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import WelcomeSection from "../../sections/WelcomeSection";
 import SubtitleSection from "../../sections/SubtitleSection";
@@ -9,6 +10,7 @@ import LettersSection from "../../sections/LettersSection";
 import GallerySection from "../../sections/GallerySection";
 import LetterBoxSection from "../../sections/LetterBoxSection";
 import SceneSurroundings from "./SceneSurroundings";
+import CanvasLoader from "./CanvasLoader";
 
 interface SceneProps {
   setCurrentSection: (section: number) => void;
@@ -19,23 +21,48 @@ interface SceneProps {
   sectionOffsets: THREE.Vector3[];
 }
 
-export function CustomCameraControls({
+const verticalFit = [1.4, 1.78, 1.36, 1.28, 1, 1.1, 1];
+
+function chapterFocus(position: THREE.Vector3, index: number) {
+  return index === 1 ? position.clone().add(new THREE.Vector3(0, -1.8, 0)) : position;
+}
+
+function CustomCameraControls({
   setCurrentSection,
   currentSection,
   isClickedNavButton,
   setIsClickedNavButton,
   sectionPositions,
   sectionOffsets,
-}: SceneProps) {
+  destination,
+  setDestination,
+  reducedMotion,
+}: SceneProps & {
+  destination: number | null;
+  setDestination: (index: number | null) => void;
+  reducedMotion: boolean;
+}) {
   const controlsRef = useRef<CameraControls | null>(null);
   const isTransitioning = useRef(false);
   const initialSection = useRef(currentSection);
+  const { width, height } = useThree(({ size }) => size);
+
+  useFrame(({ camera }, delta) => {
+    if (!(camera instanceof THREE.PerspectiveCamera) || !width || !height) return;
+    // Fit the scene between the overlays, and maintain a minimum horizontal view in portrait.
+    const fit = Math.max(verticalFit[destination ?? currentSection] * Math.max(1, 620 / height), 1.26 * height / width);
+    const fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(Math.PI / 12) * fit));
+    if (Math.abs(camera.fov - fov) < 0.01) return;
+    camera.fov = reducedMotion ? fov : THREE.MathUtils.damp(camera.fov, fov, 12, delta);
+    camera.updateProjectionMatrix();
+  });
 
   useEffect(() => { initialSection.current = currentSection; }, [currentSection]);
 
   useEffect(() => {
-    const target = sectionPositions[initialSection.current];
-    const camera = target.clone().add(sectionOffsets[initialSection.current]);
+    const index = initialSection.current;
+    const camera = sectionPositions[index].clone().add(sectionOffsets[index]);
+    const target = chapterFocus(sectionPositions[index], index);
     void controlsRef.current?.setLookAt(camera.x, camera.y, camera.z, target.x, target.y, target.z, false);
   }, [sectionOffsets, sectionPositions]);
 
@@ -45,8 +72,11 @@ export function CustomCameraControls({
     if (!controls || isTransitioning.current || index < 0 || index >= sectionPositions.length) return;
 
     isTransitioning.current = true;
-    const target = sectionPositions[index];
-    const camera = target.clone().add(sectionOffsets[index]);
+    controls.cancel();
+    controls.enabled = false;
+    setDestination(index);
+    const camera = sectionPositions[index].clone().add(sectionOffsets[index]);
+    const target = chapterFocus(sectionPositions[index], index);
 
     const move = (animate: boolean) =>
       controls.setLookAt(camera.x, camera.y, camera.z, target.x, target.y, target.z, animate);
@@ -54,7 +84,7 @@ export function CustomCameraControls({
 
     try {
       await Promise.race([
-        move(true),
+        move(!reducedMotion),
         new Promise<void>((resolve) => {
           timeout = setTimeout(() => { void move(false); resolve(); }, 1800);
         }),
@@ -62,10 +92,12 @@ export function CustomCameraControls({
       setCurrentSection(index);
     } finally {
       clearTimeout(timeout);
+      controls.enabled = true;
       isTransitioning.current = false;
+      setDestination(null);
       setIsClickedNavButton(0);
     }
-  }, [currentSection, sectionOffsets, sectionPositions, setCurrentSection, setIsClickedNavButton]);
+  }, [currentSection, reducedMotion, sectionOffsets, sectionPositions, setCurrentSection, setDestination, setIsClickedNavButton]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -123,7 +155,17 @@ export default function Scene({
   sectionPositions,
   sectionOffsets,
 }: WorldProps) {
-  // console.log("Rendering Scene", sectionOffsets[0], sectionOffsets[0].z, sectionOffsets[0].z + sectionOffsets[0].z);
+  const [destination, setDestination] = useState<number | null>(null);
+  const positions = sectionPositions.map((position) => position.toArray());
+  const sections = [
+    <WelcomeSection position={positions[0]} />,
+    <SubtitleSection position={positions[1]} />,
+    <SchoolSection position={positions[2]} reducedMotion={reducedMotion} />,
+    <InvitationSection position={positions[3]} onOpen={() => { if (currentSection === 3) onOpenInvitation(); }} />,
+    <LettersSection position={positions[4]} active={currentSection === 4} onOpen={(index) => { if (currentSection === 4) onOpenLetter(index); }} />,
+    <GallerySection position={positions[5]} page={galleryPage} onOpen={(index) => { if (currentSection === 5) onOpenPhoto(index); }} />,
+    <LetterBoxSection position={positions[6]} active={currentSection === 6} reducedMotion={reducedMotion} onOpen={onOpenRsvp} />,
+  ];
   return (
     <>
       <CustomCameraControls
@@ -133,37 +175,20 @@ export default function Scene({
         setIsClickedNavButton={setIsClickedNavButton}
         sectionOffsets={sectionOffsets}
         sectionPositions={sectionPositions}
-      />
-
-      {sectionPositions.slice(0, 6).map((position, index) => (
-        <SceneSurroundings key={index} scene={index} position={position.toArray()}
-          active={index === currentSection} reducedMotion={reducedMotion} />
-      ))}
-
-      {/* Welcome Section (visible from far) */}
-      <WelcomeSection
-        position={sectionPositions[0].toArray() as [number, number, number]}
-      />
-
-      {/* Subtitle Section (visible when zooming in) */}
-      <SubtitleSection
-        position={sectionPositions[1].toArray() as [number, number, number]}
-      />
-
-      {/* Graduation Invitation (visible when zooming in more) */}
-      <SchoolSection
+        destination={destination}
+        setDestination={setDestination}
         reducedMotion={reducedMotion}
-        position={sectionPositions[2].toArray() as [number, number, number]}
       />
 
-      <InvitationSection
-        onOpen={() => { if (currentSection === 3) onOpenInvitation(); }}
-        position={sectionPositions[3].toArray() as [number, number, number]}
-      />
-      <LettersSection position={sectionPositions[4].toArray()} active={currentSection === 4} onOpen={(index) => { if (currentSection === 4) onOpenLetter(index); }} />
-      <GallerySection position={sectionPositions[5].toArray()} page={galleryPage} onOpen={(index) => { if (currentSection === 5) onOpenPhoto(index); }} />
-      <LetterBoxSection position={sectionPositions[6].toArray()} active={currentSection === 6}
-        reducedMotion={reducedMotion} onOpen={onOpenRsvp} />
+      {sections.map((section, index) => Math.abs(index - currentSection) <= 1 && (
+        <group key={index} visible={index === currentSection || index === destination}>
+          <Suspense fallback={index === currentSection ? <CanvasLoader /> : null}>
+            {index < 6 && <SceneSurroundings scene={index} position={positions[index]}
+              active={index === currentSection} reducedMotion={reducedMotion} />}
+            {section}
+          </Suspense>
+        </group>
+      ))}
     </>
   );
 }

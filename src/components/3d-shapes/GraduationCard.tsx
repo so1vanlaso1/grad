@@ -47,7 +47,7 @@ export default function GraduationCard({ position }: GraduationCardProps) {
     texture.rotation = 0; // No rotation
   }, [texture]);
   return (
-    <group position={position} scale={2.5}>
+    <group position={position} scale={2.8}>
       {/* Use a Float from drei to add a cute floating motion */}
       <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.6}>
         {/* Main jelly card as a rounded box */}

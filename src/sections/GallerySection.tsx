@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { useThree } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { album } from "../graduation";
 import { Block, Photo, type Point } from "../components/3d-shapes/GraduationStage";
@@ -14,12 +13,11 @@ export default function GallerySection({ position, page, onOpen }: {
   page: number;
   onOpen: (index: number) => void;
 }) {
-  const scale = useThree(({ size }) => Math.min(1, size.width / size.height / 1.05));
   const start = page * 3;
   const photos = album.slice(start, start + 3);
 
   return (
-    <group position={position} scale={scale}>
+    <group position={position}>
       {/* An open-front room with its walls, floor and track in the same 3D space. */}
       <Block position={[0, -3.65, 0]} size={[16.8, 0.42, 10.5]} color={walnut} />
       <Block position={[0, 0.29, -5.05]} size={[16.8, 7.45, 0.35]} color={wall} />
@@ -64,7 +62,7 @@ export default function GallerySection({ position, page, onOpen }: {
                 <meshBasicMaterial color="#ffe7bb" />
               </mesh>
             </group>
-            <pointLight position={[0, 2.7, -3.1]} color="#ffd7a7" intensity={13 * scale ** 2} distance={6 * scale} />
+            <pointLight position={[0, 2.7, -3.1]} color="#ffd7a7" intensity={13} distance={6} />
 
             <group position={[0, 0.16, -4.63]}
               onClick={(event) => { event.stopPropagation(); onOpen(start + index); }}>

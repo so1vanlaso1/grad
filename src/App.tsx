@@ -52,7 +52,7 @@ function App() {
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <BackgroundMusic />
       {showWelcome ? (
-        <div className="h-screen">
+        <div className="h-dvh">
           <StarryBackground />
           <IntroTypeScreen onComplete={handleWelcomeComplete} />
         </div>

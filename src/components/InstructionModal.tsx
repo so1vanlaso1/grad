@@ -23,7 +23,7 @@ export default function InstructionModal({ isOpen, onClose }: InstructionModalPr
       <div className="relative 
       bg-gradient-to-br from-red-50 to-orange-50 dark:from-slate-800 dark:to-slate-950 
       text-gray-800 dark:text-gray-100 rounded-2xl shadow-2xl w-full max-w-lg md:max-w-xl 
-      px-4 py-9 md:p-8 overflow-y-auto md:h-auto max-h-[90vh]">
+      px-4 py-9 md:p-8 overflow-y-auto md:h-auto max-h-[90dvh]">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -40,7 +40,7 @@ export default function InstructionModal({ isOpen, onClose }: InstructionModalPr
         </h2>
         <h2 className="text-base lg:text-lg font-light italic mb-6 
         bg-clip-text-transparent bg-grad-to-tl-purple-pink">
-          You should use laptop or desktop for the best experience!
+          Explore the invitation with a mouse or touch.
         </h2>
 
         {/* Instructions */}
@@ -49,7 +49,7 @@ export default function InstructionModal({ isOpen, onClose }: InstructionModalPr
             <div className="instruction-icon-container bg-blue-100 dark:bg-blue-900/30">
               <FaMousePointer className="text-xl text-blue-600 dark:text-blue-400" />
             </div>
-            <span className="font-medium"><strong>Click and drag</strong> to rotate the scene and view different angles.</span>
+            <span className="font-medium"><strong>Drag with your mouse or one finger</strong> to rotate the scene.</span>
           </div>
           
           <div className="instruction-row">
@@ -66,14 +66,14 @@ export default function InstructionModal({ isOpen, onClose }: InstructionModalPr
                 <FaSearchMinus className="text-xl text-pink-600 dark:text-pink-400" />
               </div>
             </div>
-            <span className="font-medium">Click and drag to zoom in and out and explore sections.</span>
+            <span className="font-medium"><strong>Scroll or pinch</strong> to zoom in and out.</span>
           </div>
           
           <div className="instruction-row">
             <div className="instruction-icon-container bg-purple-100 dark:bg-purple-900/30">
               <MdSwipe className="text-xl text-purple-600 dark:text-purple-400" />
             </div>
-            <span className="font-medium">Use arrow keys to switch sections.</span>
+            <span className="font-medium">Tap the on-screen arrows or use the arrow keys to switch chapters.</span>
           </div>
         </div>
 
