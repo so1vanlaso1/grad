@@ -1,3 +1,4 @@
+import { useThree } from "@react-three/fiber";
 import GumText from "../components/3d-shapes/GumText";
 import CherryBlossomPetals from "../components/3d-shapes/CherryBlossomPetal";
 import CottonCandy from "../components/3d-shapes/CottonCandy";
@@ -12,6 +13,7 @@ export default function SubtitleSection({
 }: {
   position: [number, number, number];
 }) {
+  const portrait = useThree(({ size }) => size.width < size.height);
   return (
     <Stage position={position}>
       <spotLight
@@ -21,10 +23,10 @@ export default function SubtitleSection({
         intensity={1}
       />
 
-      <GumText position={[3.3, 2.5, 10.5]} size={0.68} text="GRADUATION?" color="pink" />
+      <GumText position={portrait ? [0.8, 5.6, 11] : [4.2, 2.5, 12]} size={0.48} text="GRADUATION?" color="pink" />
       <CherryBlossomPetals count={36} />
-      <CottonCandy position={[4.2, 1.9, -9]} color="#ffaadd" scale={0.8} />
-      <CottonCandy position={[6.1, 3.3, -12]} color="#ffbbee" scale={0.7} />
+      <CottonCandy position={[4.2, 1.9, -9]} color="#ffaadd" scale={1.7} />
+      <CottonCandy position={[6.1, 3.3, -12]} color="#ffbbee" scale={1.45} />
 
       <Sakura position={[-5.5, -7, 7.2]} scale={[-0.29, 0.37, 0.37]} />
       <WoodenBench position={[-2, -7, 10]} scale={[1.5, 1.5, -1.5]} />

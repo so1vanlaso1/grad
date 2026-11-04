@@ -160,6 +160,7 @@ export default function Home() {
         onNext={onClickNextSection}
         currentSection={currentSection}
         totalSections={chapters.length}
+        busy={isClickedNavButtons !== 0}
       />
       <TopBar />
     </div>

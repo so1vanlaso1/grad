@@ -41,13 +41,13 @@ export default function WelcomeSection({ position }: { position: Point }) {
       <GumText position={[0, 2, 0]} size={1.35} text="07.11.2026" />
       <CherryBlossomPetals count={36} />
       <CandyCluster count={16} />
-      <CottonCandy position={[-8.8, -1.5, -5]} scale={1.15} color="#ffccff" />
-      <CottonCandy position={[8.8, -2.5, -5]} scale={1.15} color="#ffaadd" />
-      <CottonCandy position={[-3.8, -6, -8]} scale={0.9} color="#ffccee" />
-      <CottonCandy position={[4.7, -7, -6]} scale={1.05} color="#ffccff" />
-      <CottonCandy position={[-5.2, 5.5, -7]} scale={0.9} color="#ffccee" />
-      <CottonCandy position={[5.8, 5.6, -7]} scale={0.8} color="#ffaadd" />
-      <CottonCandy position={[0, 7.8, -9]} scale={1} color="#ffbbee" />
+      <CottonCandy position={[-8.8, -1.5, -5]} scale={2.1} color="#ffccff" />
+      <CottonCandy position={[8.8, -2.5, -5]} scale={2.1} color="#ffaadd" />
+      <CottonCandy position={[-3.8, -6, -8]} scale={1.5} color="#ffccee" />
+      <CottonCandy position={[4.7, -7, -6]} scale={1.7} color="#ffccff" />
+      <CottonCandy position={[-5.2, 5.5, -7]} scale={1.5} color="#ffccee" />
+      <CottonCandy position={[5.8, 5.6, -7]} scale={1.35} color="#ffaadd" />
+      <CottonCandy position={[0, 7.8, -9]} scale={1.7} color="#ffbbee" />
       <Sparkles count={80} scale={20} size={8} speed={0.3} color="#ffffff" />
     </Stage>
   );

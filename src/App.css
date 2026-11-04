@@ -337,3 +337,26 @@
   background: #fff9e9;
   box-shadow: 0 0 7px 2px #ffd0df, 0 0 18px 5px #ed98bc;
 }
+
+/* Keep touch gestures on the 3D surface from scrolling the browser page. */
+.graduation-world canvas { touch-action: none; }
+.chapter-navigation {
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  margin-inline: auto;
+  padding: 0.35rem;
+  border: 1px solid #c29d7860;
+  border-radius: 999px;
+  background: #fff6e9e8;
+  box-shadow: 0 4px 24px #50223618;
+  color: #502236;
+}
+.dark .chapter-navigation { background: #291a29ed; color: #ffe7d2; }
+.chapter-navigation button { transition: background-color 180ms, opacity 180ms; }
+@media (max-width: 600px) {
+  .chapter-heading { padding-inline: 1.25rem; }
+  .chapter-heading h1 { font-size: clamp(1.65rem, 6.6vw, 2.35rem); }
+  .chapter-heading span { display: block; max-width: 32ch; margin-inline: auto; line-height: 1.5; }
+  .chapter-actions { bottom: calc(5rem + env(safe-area-inset-bottom)); gap: 0.35rem; }
+  .chapter-actions button { font-size: 0.75rem; box-shadow: 0 3px 12px #50223618; }
+}

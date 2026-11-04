@@ -14,7 +14,7 @@ export default function SchoolSection({ position, reducedMotion }: { position: P
       <spotLight position={[5, 5, 5]} angle={0.25} penumbra={1} intensity={1} color="#ffffff" />
       <SchoolCard position={[0, 0, 0]} reducedMotion={reducedMotion} />
       <RMIT3DText position={[0, 2.2, 0]} text="WSU" fontSize={1.5} />
-      <RMITConfetti count={60} />
+      <RMITConfetti count={30} reducedMotion={reducedMotion} />
       <WSUCampus position={[2.2, -0.5, -8]} scale={0.58} reducedMotion={reducedMotion} />
       <Tree position={[-10.2, -6.5, -4]} scale={0.075} />
       <Tree position={[-7.8, -6.5, -8]} scale={[0.075, 0.1, 0.075]} />

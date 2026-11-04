@@ -14,7 +14,7 @@ export default function CottonCandy({
   return (
     <Float speed={1} rotationIntensity={0.2} floatIntensity={0.2}>
       <group position={position} scale={scale}>
-        <Clouds texture="/textures/cloud.svg" limit={10}>
+        <Clouds texture="/textures/cloud.png" limit={10}>
           <Cloud
             segments={10}
             bounds={[1, 1, 1]}

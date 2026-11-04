@@ -50,3 +50,5 @@ This project uses various open-source libraries, including:
 
 ### Author
 Creative design and layout by Tran Mai Nhung (陈梅绒) from Github [Puppychan](https://github.com/Puppychan)
+
+- `public/textures/cloud.png`: original Drei cloud sprite from pmndrs/drei-assets, commit `9225a9f1fbd449d9411125c2f419b843d0308c9f`, previously loaded by Drei from its CDN; now served locally.

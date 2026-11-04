@@ -21,7 +21,7 @@ interface SceneProps {
   sectionOffsets: THREE.Vector3[];
 }
 
-const verticalFit = [1.4, 1.78, 1.36, 1.28, 1, 1.1, 1];
+const verticalFit = [1.08, 1.78, 1.5, 1.28, 1, 1.1, 1];
 
 function chapterFocus(position: THREE.Vector3, index: number) {
   return index === 1 ? position.clone().add(new THREE.Vector3(0, -1.8, 0)) : position;
@@ -46,11 +46,12 @@ function CustomCameraControls({
   const isTransitioning = useRef(false);
   const initialSection = useRef(currentSection);
   const { width, height } = useThree(({ size }) => size);
+  const gl = useThree(({ gl }) => gl);
 
   useFrame(({ camera }, delta) => {
     if (!(camera instanceof THREE.PerspectiveCamera) || !width || !height) return;
     // Fit the scene between the overlays, and maintain a minimum horizontal view in portrait.
-    const fit = Math.max(verticalFit[destination ?? currentSection] * Math.max(1, 620 / height), 1.26 * height / width);
+    const fit = Math.max(verticalFit[destination ?? currentSection] * Math.max(1, 620 / height), 1.18 * height / width);
     const fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(Math.PI / 12) * fit));
     if (Math.abs(camera.fov - fov) < 0.01) return;
     camera.fov = reducedMotion ? fov : THREE.MathUtils.damp(camera.fov, fov, 12, delta);
@@ -73,41 +74,37 @@ function CustomCameraControls({
 
     isTransitioning.current = true;
     controls.cancel();
-    controls.enabled = false;
+    // Keep the frame update alive; disconnect input only during the flight.
+    controls.disconnect();
     setDestination(index);
     const camera = sectionPositions[index].clone().add(sectionOffsets[index]);
     const target = chapterFocus(sectionPositions[index], index);
 
     const move = (animate: boolean) =>
       controls.setLookAt(camera.x, camera.y, camera.z, target.x, target.y, target.z, animate);
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-
     try {
-      await Promise.race([
-        move(!reducedMotion),
-        new Promise<void>((resolve) => {
-          timeout = setTimeout(() => { void move(false); resolve(); }, 1800);
-        }),
-      ]);
+      await move(!reducedMotion);
       setCurrentSection(index);
     } finally {
-      clearTimeout(timeout);
-      controls.enabled = true;
+      controls.connect(gl.domElement);
       isTransitioning.current = false;
       setDestination(null);
       setIsClickedNavButton(0);
     }
-  }, [currentSection, reducedMotion, sectionOffsets, sectionPositions, setCurrentSection, setDestination, setIsClickedNavButton]);
+  }, [currentSection, gl, reducedMotion, sectionOffsets, sectionPositions, setCurrentSection, setDestination, setIsClickedNavButton]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (document.querySelector("dialog[open]") || event.repeat) return;
-      if (event.key === "ArrowRight") void navigate(1);
-      if (event.key === "ArrowLeft") void navigate(-1);
+      if (document.querySelector("dialog[open]") || event.repeat || isTransitioning.current) return;
+      const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+      if (direction && currentSection + direction >= 0 && currentSection + direction < sectionPositions.length) {
+        event.preventDefault();
+        setIsClickedNavButton(direction);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
+  }, [currentSection, sectionPositions.length, setIsClickedNavButton]);
 
   useEffect(() => {
     if (isClickedNavButton) void navigate(isClickedNavButton);
@@ -117,15 +114,15 @@ function CustomCameraControls({
     <CameraControls
       ref={controlsRef}
       makeDefault
-      smoothTime={0.22}
+      smoothTime={0.32}
       restThreshold={0.12}
-      maxDistance={150}
-      minDistance={5}
-      maxPolarAngle={Math.PI / 1.5}
-      minPolarAngle={Math.PI / 8}
+      maxDistance={sectionOffsets[destination ?? currentSection].length() * 1.2}
+      minDistance={sectionOffsets[destination ?? currentSection].length() * 0.88}
+      maxPolarAngle={Math.PI * 0.58}
+      minPolarAngle={Math.PI / 3}
       // Add rotation constraints for each section
-      maxAzimuthAngle={Math.PI / 2} // Limit horizontal rotation
-      minAzimuthAngle={-Math.PI / 2}
+      maxAzimuthAngle={Math.PI / 5} // Limit horizontal rotation
+      minAzimuthAngle={-Math.PI / 5}
       // dampingFactor={0.1} // Smoother camera movement
       // draggingDampingFactor={0.1}
     />

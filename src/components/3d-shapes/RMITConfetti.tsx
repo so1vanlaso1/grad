@@ -5,14 +5,18 @@ import { useMemo, useRef } from "react";
 import { DoubleSide, Euler, Group, Vector3 } from "three";
 import { GraduationCap } from "../3d-models/GraduationCap";
 
+const defaultColors = ["#d39afc", "#ffc1e3", "#ffffff", "#2e2e87"];
+
 interface RMITConfettiProps {
+  reducedMotion?: boolean;
   count?: number;
   colors?: string[];
 }
 
 export function RMITConfetti({
   count = 100,
-  colors = ["#d39afc", "#ffc1e3", "#ffffff", "#2e2e87"],
+  reducedMotion = false,
+  colors = defaultColors,
 }: RMITConfettiProps) {
   const groupRef = useRef<Group>(null);
 
@@ -40,7 +44,7 @@ export function RMITConfetti({
         scale:
           typeString == "hat"
             ? Math.random() * 0.1 + 0.01
-            : Math.random() * 0.4 + 0.1,
+            : Math.random() * 0.18 + 0.08,
         color: colors[Math.floor(Math.random() * colors.length)],
         speed: Math.random() * 0.1 + 0.02,
       });
@@ -68,6 +72,8 @@ export function RMITConfetti({
               <meshBasicMaterial
                 map={logoTexture}
                 transparent
+                depthWrite={false}
+                alphaTest={0.05}
                 side={DoubleSide}
               />
             </mesh>
@@ -81,7 +87,7 @@ export function RMITConfetti({
               rotation={p.rotation}
               scale={p.scale}
             >
-              <planeGeometry args={[1, 1]} />
+              <planeGeometry args={[0.35, 0.8]} />
               <meshStandardMaterial color={p.color} side={DoubleSide} />
             </mesh>
           );
@@ -90,18 +96,20 @@ export function RMITConfetti({
     return { renderedParticles, particles: items };
   }, [count, colors, logoTexture]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
+    if (reducedMotion) return;
+    const step = Math.min(delta, 0.05) * 60;
     groupRef.current?.children.forEach((child, i) => {
       const p = particles[i];
-      p.position.y -= p.speed;
+      p.position.y -= p.speed * step;
       if (p.position.y < -10) p.position.y = 20;
 
       // Slight swaying motion
-      p.position.x += Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.01;
-      p.position.z += Math.cos(state.clock.elapsedTime * 0.5 + i) * 0.01;
+      p.position.x += Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.01 * step;
+      p.position.z += Math.cos(state.clock.elapsedTime * 0.5 + i) * 0.01 * step;
 
-      p.rotation.x += 0.01;
-      p.rotation.y += 0.01;
+      p.rotation.x += 0.01 * step;
+      p.rotation.y += 0.01 * step;
 
       child.position.copy(p.position);
       child.rotation.copy(p.rotation);
