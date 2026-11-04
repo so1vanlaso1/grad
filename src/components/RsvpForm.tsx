@@ -50,7 +50,7 @@ export default function RsvpForm() {
           <button type="submit" disabled={status === "sending"}>
             {status === "sending" ? "Sending…" : "Send"}
           </button>
-          {status === "error" && (
+            {status === "error" && (
             <p role="alert">We couldn’t confirm your reply. Your entries are still here. Please try again.</p>
           )}
         </form>
