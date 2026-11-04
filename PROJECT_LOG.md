@@ -95,3 +95,15 @@
 
 - The current form prepares an SMS draft. The project does not store RSVP submissions.
 - The template README links to the original author’s Netlify site. Hosting for Dung’s copy is unconfirmed. If hosted on Dung’s own Netlify site, Netlify Forms can accept and store the responses, with optional email notifications. React requires a matching static form definition and a form submission request.
+
+## VPS RSVP API and Google Sheets · 05/11/2026
+
+- Replaced the SMS draft with a same-origin API request. The form confirms only after Google Sheets reports one row written and preserves input on failure.
+- Added a Node.js backend with zero npm dependencies in Desktop/grad. It uses a server-side service account, caches its access token, and appends the UTC timestamp, name, attendance, and note as raw values.
+- Build and lint passed. Local HTTP checks with mocked Google responses covered validation, body limits, authentication caching, successful append and upstream rejection. Live delivery needs the user's Sheet and service account configuration.
+
+## Live RSVP endpoint integration · 05/11/2026
+
+- The hosted invitation cannot use the local development proxy, so the RSVP form now posts directly to `https://140-245-38-247.sslip.io/api/rsvp`. The API permits cross-origin POST requests with JSON. The form sends name, yes/no attendance, and the optional note; it preserves entries on failure and confirms only on a 201 response with `ok: true`.
+- Live checks: CORS preflight returned 204, an invalid submission returned 400, and a labeled test submission (`TEST - Codex`, attendance `no`) returned 201 with `{"ok":true}`. The test creates a response that should be disregarded. This confirms the API response, not independent inspection of the spreadsheet.
+- Production build and lint were run for this change.
