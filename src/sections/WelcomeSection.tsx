@@ -53,7 +53,7 @@ export default function WelcomeSection({
         {/* Bubbles */}
         {bubbles}
         {/* Main 3D Text */}
-        <GumText position={[0, 2, 0]} size={2.5} text="APRIL 2025" />
+        <GumText position={[0, 2, 0]} size={1.35} text="07.11.2026" />
         {/* <GumText position={[0, -2, 0]} text="DREAMS" /> */}
 
         {/* Cherry blossom petals */}

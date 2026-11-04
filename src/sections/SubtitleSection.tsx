@@ -35,9 +35,9 @@ export default function SubtitleSection({
         <CherryBlossomPetals count={50} />
 
         {/* Cotton candy clouds */}
-        {/* Top */}
-        <CottonCandy position={[10, 8, -3]} color="#ffaadd" scale={1.2} />
-        <CottonCandy position={[7, 10, -6]} color="#ffbbee" scale={2} />
+        {/* Smaller clouds behind the tree, within the camera frame. */}
+        <CottonCandy position={[4.2, 1.9, -9]} color="#ffaadd" scale={0.8} />
+        <CottonCandy position={[6.1, 3.3, -12]} color="#ffbbee" scale={0.7} />
 
         <Sakura position={[-6, -7, 10]} scale={[-0.5, 0.6, 0.6]} />
         <WoodenBench position={[-2, -7, 10]} scale={[1.5, 1.5, -1.5]} />

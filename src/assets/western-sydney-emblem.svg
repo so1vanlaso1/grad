@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="480" viewBox="0 0 600 480">
+  <rect width="600" height="480" fill="#fff8ee"/>
+  <path fill="#a0002e" d="M193 37h222v160c0 50-52 91-111 119-59-28-111-69-111-119z"/>
+  <path fill="#fff8ee" d="M216 82h24l27 115 26-115h22l26 115 27-115h24l-38 152-28-9-22-96-22 96-28 9z"/>
+  <text x="300" y="389" text-anchor="middle" fill="#a0002e" font-family="Arial,sans-serif" font-size="46" font-weight="bold" textLength="552" lengthAdjust="spacingAndGlyphs">WESTERN SYDNEY</text>
+  <text x="300" y="443" text-anchor="middle" fill="#231b1e" font-family="Georgia,serif" font-size="47" letter-spacing="2">UNIVERSITY</text>
+</svg>
+

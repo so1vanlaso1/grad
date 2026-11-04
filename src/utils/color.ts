@@ -1,7 +1,7 @@
 // theme.ts
 export const lightTheme = {
   name: "light",
-  background: "bg-gradient-to-br from-cyan-100 via-indigo-200 to-rose-200",
+  background: "bg-gradient-to-br from-[#fff5e3] via-[#ead0c0] to-[#bc7887]",
   primary: "#a688aa", // Light blue
   secondary: "#ffb6c1", // Light pink
   accent: "#ffd700", // Gold
@@ -11,7 +11,7 @@ export const lightTheme = {
 
 export const darkTheme = {
   name: "dark",
-  background: "bg-gradient-to-br from-slate-950 via-indigo-900 to-blue-950",
+  background: "bg-gradient-to-br from-[#1e111b] via-[#351922] to-[#100e17]",
   primary: "#2f4858", // Dodger blue
   secondary: "#ff69b4", // Hot pink
   accent: "#ffdb58", // Mustard yellow

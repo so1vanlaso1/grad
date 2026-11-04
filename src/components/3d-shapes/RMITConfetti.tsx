@@ -1,3 +1,4 @@
+import emblem from "../../assets/western-sydney-emblem.svg";
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
@@ -16,7 +17,7 @@ export function RMITConfetti({
   const groupRef = useRef<Group>(null);
 
   // Load graduation hat model (adjust path)
-  const logoTexture = useTexture("/assets/rmit-logo-short.png");
+  const logoTexture = useTexture(emblem);
 
   const { renderedParticles, particles } = useMemo(() => {
     const items = [];

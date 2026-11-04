@@ -1,16 +1,20 @@
 import { Float, RoundedBox, useTexture } from "@react-three/drei";
-import { DoubleSide } from "three";
+import { DoubleSide, SRGBColorSpace } from "three";
+import SchoolSheen from "./SchoolSheen";
+import emblem from "../../assets/western-sydney-emblem.svg";
 
 
 interface SchoolCardProps {
   position: [number, number, number];
+  reducedMotion: boolean;
 }
-export default function SchoolCard({ position }: SchoolCardProps) {
-  const texture = useTexture("/assets/rmit-logo.svg");
+export default function SchoolCard({ position, reducedMotion }: SchoolCardProps) {
+  const texture = useTexture(emblem);
+  texture.colorSpace = SRGBColorSpace;
   return (
     <group position={position}>
       {/* Use a Float from drei to add a cute floating motion */}
-      <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.6}>
+      <Float speed={1.5} rotationIntensity={reducedMotion ? 0 : 0.2} floatIntensity={reducedMotion ? 0 : 0.6}>
         {/* Main jelly card as a rounded box */}
         <RoundedBox
           radius={0.25}
@@ -31,14 +35,10 @@ export default function SchoolCard({ position }: SchoolCardProps) {
           />
         </RoundedBox>
 
-        <mesh position={[0, 0, 0.05]}>
-          <boxGeometry args={[4, 1.5, 0.1]} />
-          <meshStandardMaterial
-            map={texture}
-            transparent={true}
-            opacity={0.8}
-            // color={borderColor}
-          />
+        <mesh position={[0, 0, 0.06]}>
+          <planeGeometry args={[3.25, 2.6]} />
+          <meshBasicMaterial map={texture} toneMapped={false} />
+          <SchoolSheen texture={texture} size={[3.25, 2.6]} strength={0.24} reducedMotion={reducedMotion} />
         </mesh>
       </Float>
     </group>

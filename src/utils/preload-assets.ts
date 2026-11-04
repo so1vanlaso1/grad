@@ -7,9 +7,6 @@ useTexture.preload("/textures/CB5E3B_FABC7A_EF965E_F4A46C.png");
 useTexture.preload("/textures/tranquil.jpg");
 
 useTexture.preload("/assets/koala.jpg");
-useTexture.preload("/assets/rmit-campus.png");
-useTexture.preload("/assets/rmit-logo-short.png");
-useTexture.preload("/assets/rmit-logo.svg");
 
 useLoader.preload(FontLoader, "/fonts/gt.json");
 // useLoader.preload(FontLoader, "/fonts/CormorantInfant-Bold.ttf");

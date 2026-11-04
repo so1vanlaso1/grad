@@ -1,24 +1,28 @@
-@font-face {
-  font-family: "Cormorant";
-  src: url("/fonts/CormorantInfant-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-display: swap;
-}
 :root {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
   font-synthesis: none;
-  color: #f7f0e7;
-  background: #171927;
-  font-size: 16px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; }
-button, a { -webkit-tap-highlight-color: transparent; }
-button { font: inherit; cursor: pointer; }
-button:disabled { cursor: default; }
-a { color: inherit; }
-button:focus-visible, a:focus-visible { outline: 2px solid #cc9e68; outline-offset: 4px; }
-button svg, a svg { flex: none; }
-::selection { background: #792f3b; color: #fff2e3; }
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+}

@@ -1,11 +1,14 @@
 import { CameraControls } from "@react-three/drei";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 import WelcomeSection from "../../sections/WelcomeSection";
 import SubtitleSection from "../../sections/SubtitleSection";
 import SchoolSection from "../../sections/SchoolSection";
 import InvitationSection from "../../sections/InvitationSection";
-import debounce from "lodash/debounce";
+import LettersSection from "../../sections/LettersSection";
+import GallerySection from "../../sections/GallerySection";
+import LetterBoxSection from "../../sections/LetterBoxSection";
+import SceneSurroundings from "./SceneSurroundings";
 
 interface SceneProps {
   setCurrentSection: (section: number) => void;
@@ -25,118 +28,63 @@ export function CustomCameraControls({
   sectionOffsets,
 }: SceneProps) {
   const controlsRef = useRef<CameraControls | null>(null);
-  const zPosition = useRef(sectionOffsets[0].z);
   const isTransitioning = useRef(false);
-  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const initialSection = useRef(currentSection);
 
-  // Navigate to a specific section with animation
-  const navigateToSection = useCallback(
-    (sectionIndex: number) => {
-      if (!controlsRef.current || isTransitioning.current) return;
-
-      console.log("Navigating to section", sectionIndex);
-      isTransitioning.current = true;
-
-      const targetPosition = sectionPositions[sectionIndex];
-
-      // Clear any existing transition timeout
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
-      }
-
-      const offset = sectionOffsets[sectionIndex];
-      const cameraPos = targetPosition.clone().add(offset);
-
-      controlsRef.current.setLookAt(
-        cameraPos.x,
-        cameraPos.y,
-        cameraPos.z,
-        targetPosition.x,
-        targetPosition.y,
-        targetPosition.z,
-        true // animate
-      );
-
-      // Set a timeout to complete the transition after animation finishes
-      transitionTimeoutRef.current = setTimeout(() => {
-        setCurrentSection(sectionIndex);
-        zPosition.current = cameraPos.z;
-        isTransitioning.current = false;
-        setIsClickedNavButton(0); // Reset button click state
-        console.log("Animation complete, now at section:", sectionIndex);
-      }, 1000); // Animation duration - increased for smoother transitions
-    },
-    [sectionOffsets, sectionPositions, setCurrentSection, setIsClickedNavButton]
-  );
-
-  // Debounced transition function using lodash
-  const debouncedNavigateToSection = useMemo(
-    () =>
-      debounce(navigateToSection, 1000, {
-        leading: true,
-        trailing: false,
-      }),
-    [navigateToSection]
-  );
-
-  // Handle keyboard navigation
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (isTransitioning.current) return;
-
-      if (
-        event.key === "ArrowRight" &&
-        currentSection < sectionPositions.length - 1
-      ) {
-        debouncedNavigateToSection(currentSection + 1);
-      } else if (event.key === "ArrowLeft" && currentSection > 0) {
-        debouncedNavigateToSection(currentSection - 1);
-      }
-    },
-    [currentSection, debouncedNavigateToSection, sectionPositions.length]
-  );
-
-  // Clean up timeouts on unmount
   useEffect(() => {
-    // Add keyboard event listeners
-    window.addEventListener("keydown", handleKeyDown);
+    const target = sectionPositions[initialSection.current];
+    const camera = target.clone().add(sectionOffsets[initialSection.current]);
+    void controlsRef.current?.setLookAt(camera.x, camera.y, camera.z, target.x, target.y, target.z, false);
+  }, [sectionOffsets, sectionPositions]);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+  const navigate = useCallback(async (direction: -1 | 1) => {
+    const controls = controlsRef.current;
+    const index = currentSection + direction;
+    if (!controls || isTransitioning.current || index < 0 || index >= sectionPositions.length) return;
 
-      // Clear timeouts
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-      }
+    isTransitioning.current = true;
+    const target = sectionPositions[index];
+    const camera = target.clone().add(sectionOffsets[index]);
+
+    const move = (animate: boolean) =>
+      controls.setLookAt(camera.x, camera.y, camera.z, target.x, target.y, target.z, animate);
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      await Promise.race([
+        move(true),
+        new Promise<void>((resolve) => {
+          timeout = setTimeout(() => { void move(false); resolve(); }, 1800);
+        }),
+      ]);
+      setCurrentSection(index);
+    } finally {
+      clearTimeout(timeout);
+      isTransitioning.current = false;
+      setIsClickedNavButton(0);
+    }
+  }, [currentSection, sectionOffsets, sectionPositions, setCurrentSection, setIsClickedNavButton]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (document.querySelector("dialog[open]") || event.repeat) return;
+      if (event.key === "ArrowRight") void navigate(1);
+      if (event.key === "ArrowLeft") void navigate(-1);
     };
-  }, [handleKeyDown]);
-  // Clean up timeouts on unmount
-  // Handle navigation button trigger
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [navigate]);
+
   useEffect(() => {
-    if (isClickedNavButton === 0) return;
-
-    const nextIndex =
-      isClickedNavButton === 1
-        ? Math.min(sectionPositions.length - 1, currentSection + 1)
-        : Math.max(0, currentSection - 1);
-
-    debouncedNavigateToSection(nextIndex);
-  }, [
-    isClickedNavButton,
-    currentSection,
-    sectionPositions.length,
-    debouncedNavigateToSection,
-  ]);
+    if (isClickedNavButton) void navigate(isClickedNavButton);
+  }, [isClickedNavButton, navigate]);
 
   return (
     <CameraControls
       ref={controlsRef}
       makeDefault
-      // onChange={onMove}
-      enabled={!isTransitioning.current}
+      smoothTime={0.22}
+      restThreshold={0.12}
       maxDistance={150}
       minDistance={5}
       maxPolarAngle={Math.PI / 1.5}
@@ -150,14 +98,29 @@ export function CustomCameraControls({
   );
 }
 
+interface WorldProps extends SceneProps {
+  reducedMotion: boolean;
+  galleryPage: number;
+  onOpenPhoto: (index: number) => void;
+  onOpenLetter: (index: number) => void;
+  onOpenInvitation: () => void;
+  onOpenRsvp: () => void;
+}
+
 export default function Scene({
+  reducedMotion,
+  galleryPage,
+  onOpenPhoto,
+  onOpenLetter,
+  onOpenInvitation,
+  onOpenRsvp,
   setCurrentSection,
   currentSection,
   isClickedNavButton,
   setIsClickedNavButton,
   sectionPositions,
   sectionOffsets,
-}: SceneProps) {
+}: WorldProps) {
   // console.log("Rendering Scene", sectionOffsets[0], sectionOffsets[0].z, sectionOffsets[0].z + sectionOffsets[0].z);
   return (
     <>
@@ -169,6 +132,11 @@ export default function Scene({
         sectionOffsets={sectionOffsets}
         sectionPositions={sectionPositions}
       />
+
+      {sectionPositions.slice(0, 6).map((position, index) => (
+        <SceneSurroundings key={index} scene={index} position={position.toArray()}
+          active={index === currentSection} reducedMotion={reducedMotion} />
+      ))}
 
       {/* Welcome Section (visible from far) */}
       <WelcomeSection
@@ -182,12 +150,18 @@ export default function Scene({
 
       {/* Graduation Invitation (visible when zooming in more) */}
       <SchoolSection
+        reducedMotion={reducedMotion}
         position={sectionPositions[2].toArray() as [number, number, number]}
       />
 
       <InvitationSection
+        onOpen={() => { if (currentSection === 3) onOpenInvitation(); }}
         position={sectionPositions[3].toArray() as [number, number, number]}
       />
+      <LettersSection position={sectionPositions[4].toArray()} active={currentSection === 4} onOpen={(index) => { if (currentSection === 4) onOpenLetter(index); }} />
+      <GallerySection position={sectionPositions[5].toArray()} page={galleryPage} onOpen={(index) => { if (currentSection === 5) onOpenPhoto(index); }} />
+      <LetterBoxSection position={sectionPositions[6].toArray()} active={currentSection === 6}
+        reducedMotion={reducedMotion} onOpen={onOpenRsvp} />
     </>
   );
 }

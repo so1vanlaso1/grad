@@ -4,14 +4,14 @@ import { useState } from "react";
 import InstructionModal from "./InstructionModal";
 
 export default function TopBar() {
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   return (
     <div
       className="bar-container absolute top-0 left-0
       flex-between-center"
     >
-      <button onClick={() => setShowInstructions(true)} className="hover:opacity-70">
+      <button aria-label="Navigation instructions" onClick={() => setShowInstructions(true)} className="hover:opacity-70">
         <IoMdInformationCircleOutline className="display-text-color display-icon" />
       </button>
 
