@@ -1,5 +1,22 @@
 # Graduation invitation implementation log
 
+## 2026-11-04 · Complete graduation website enhancements
+
+| Finding | Resolution |
+| --- | --- |
+| 10th graduation portrait was omitted from the site. | Copied `cb89a1ba...jpg` to `public/assets/photos/flower-gaze-portrait.jpg`, added it to `photos` array, and added a "View all 10 photos" album browser. |
+| Graduate sash indicated full name and formal degree not reflected on site. | Updated site identity to **Phạm Thùy Dung**, degree to **Bachelor of Business** (*Cử nhân Kinh doanh*), and university to **Western Sydney University** (*Đại học Western Sydney*). |
+| Site lacked bilingual support for Vietnamese family, elders, and classmates. | Added `[VI | EN]` language toggle in the header, with natural and poetic Vietnamese translations for all 6 chapters, Taylor Swift quote, prompts, and buttons. |
+| Ceremony is in 3 days with no live countdown timer. | Added an animated, responsive live countdown clock (`Days : Hours : Minutes : Seconds`) to Saturday, Nov 7, 2026 at 10:00 AM. |
+| Calendar was only available as a downloadable `.ics` file. | Added a direct 1-click Google Calendar web link alongside the `.ics` download for seamless mobile and desktop calendar adding. |
+| Guests lacked direct RSVP, Zalo, and congratulation channels. | Added direct Zalo (`zalo.me/0985763939`), direct phone calling, and an interactive RSVP & Wishes modal with local wish storage and celebratory confetti. |
+| Guests needed arrival, parking, and dress code logistics. | Added a Venue & Logistics guide (recommended 9:15 AM arrival for photos, Hall A.116, UEH Campus A basement parking, and dress code recommendations). |
+| The graduate had to manually type URL parameters for personalized links. | Added a built-in Personalized Invite Link generator where Thùy Dung can type any guest's name and copy the personalized link in one click. |
+| The cinematic 3D journey lacked an atmospheric soundtrack. | Implemented a gentle, warm ambient graduation piano soundtrack synthesized in Web Audio API (zero asset weight, plays smoothly with play/mute toggle). |
+| The moment of opening the door into sunrise lacked celebratory feedback. | Added a lightweight, celebratory canvas confetti particle burst upon unlocking the door and reaching Graduation Day. |
+| Social sharing (Zalo, Messenger, iMessage) lacked link preview images. | Added `og:image` and `twitter:image` tags in `index.html` referencing the graduation portrait. |
+
+
 ## 2026-11-04 · Photo frame proportions
 
 - Finding: the 3D campus frames used a wide picture window for the supplied 2:3 portrait, leaving visible side stripes around the photo. The first CSS adjustment only affected the flat portrait frame and did not correct these 3D scene frames.
