@@ -31,6 +31,8 @@ export function CustomCameraControls({
   const isTransitioning = useRef(false);
   const initialSection = useRef(currentSection);
 
+  useEffect(() => { initialSection.current = currentSection; }, [currentSection]);
+
   useEffect(() => {
     const target = sectionPositions[initialSection.current];
     const camera = target.clone().add(sectionOffsets[initialSection.current]);

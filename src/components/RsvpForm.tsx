@@ -1,31 +1,33 @@
-import { useState, type FormEvent } from "react";
-import { graduation } from "../graduation";
+import { useRef, useState, type FormEvent } from "react";
 
 export default function RsvpForm() {
-  const [message, setMessage] = useState("");
-  const [copyStatus, setCopyStatus] = useState("");
-  const recipient = "+84" + graduation.phone.slice(1);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const sending = useRef(false);
 
-  function prepareReply(event: FormEvent<HTMLFormElement>) {
+  async function sendReply(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const name = String(data.get("name") ?? "").trim();
-    const note = String(data.get("note") ?? "").trim();
-    setMessage([
-      "Hi Dung!",
-      "Graduation RSVP: " + data.get("attendance"),
-      "From: " + name,
-      ...(note ? ["", note] : []),
-    ].join("\n"));
-    setCopyStatus("");
-  }
+    if (sending.current) return;
+    sending.current = true;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setStatus("sending");
 
-  async function copyReply() {
     try {
-      await navigator.clipboard.writeText(message);
-      setCopyStatus("Reply copied.");
+      const response = await fetch("https://140-245-38-247.sslip.io/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(data)),
+        signal: AbortSignal.timeout(22000),
+      });
+      if (response.status !== 201 || (await response.json()).ok !== true) {
+        throw new Error("RSVP was not confirmed");
+      }
+      form.reset();
+      setStatus("sent");
     } catch {
-      setCopyStatus("Select and copy the reply from the box above.");
+      setStatus("error");
+    } finally {
+      sending.current = false;
     }
   }
 
@@ -33,27 +35,25 @@ export default function RsvpForm() {
     <>
       <p className="keepsake-kicker">THE LETTER BOX</p>
       <h2 id="keepsake-title">Will you join me?</h2>
-      <form className="rsvp-form" onSubmit={prepareReply} onChange={() => { setMessage(""); setCopyStatus(""); }}>
-        <fieldset aria-labelledby="keepsake-title">
-          <label><input type="radio" name="attendance" value="Yes, I’ll be there!" required /> Yes, I’ll be there!</label>
-          <label><input type="radio" name="attendance" value="Sorry, I can’t make it." /> Sorry, I can’t make it.</label>
-        </fieldset>
-        <label htmlFor="rsvp-note">A little note for me? <small>(optional)</small></label>
-        <textarea id="rsvp-note" name="note" rows={3} maxLength={500} />
-        <label htmlFor="rsvp-name">Your name</label>
-        <input id="rsvp-name" name="name" autoComplete="name" required pattern={".*\\S.*"} maxLength={80} />
-        <button type="submit">Prepare my reply</button>
-      </form>
-      {message && (
-        <div className="rsvp-form rsvp-reply">
-          <label htmlFor="rsvp-message">Your reply is ready to send by text.</label>
-          <textarea id="rsvp-message" value={message} readOnly rows={4} />
-          <div className="keepsake-actions">
-            <a href={`sms:${recipient}?body=${encodeURIComponent(message)}`}>Open text message</a>
-            <button type="button" onClick={copyReply}>Copy reply</button>
-          </div>
-          <span role="status">{copyStatus}</span>
-        </div>
+      {status === "sent" ? (
+        <p role="status">Your reply was saved. Thank you!</p>
+      ) : (
+        <form className="rsvp-form" onSubmit={sendReply} aria-busy={status === "sending"}>
+          <fieldset aria-labelledby="keepsake-title">
+            <label><input type="radio" name="attendance" value="yes" required /> Yes, I’ll be there!</label>
+            <label><input type="radio" name="attendance" value="no" /> Sorry, I can’t make it.</label>
+          </fieldset>
+          <label htmlFor="rsvp-note">A little note for me? <small>(optional)</small></label>
+          <textarea id="rsvp-note" name="note" rows={3} maxLength={500} />
+          <label htmlFor="rsvp-name">Your name</label>
+          <input id="rsvp-name" name="name" autoComplete="name" required pattern={".*\\S.*"} maxLength={80} />
+          <button type="submit" disabled={status === "sending"}>
+            {status === "sending" ? "Sending…" : "Send"}
+          </button>
+          {status === "error" && (
+            <p role="alert">We couldn’t confirm your reply. Your entries are still here. Please try again.</p>
+          )}
+        </form>
       )}
     </>
   );

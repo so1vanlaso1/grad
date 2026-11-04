@@ -95,3 +95,34 @@
 
 - The current form prepares an SMS draft. The project does not store RSVP submissions.
 - The template README links to the original author’s Netlify site. Hosting for Dung’s copy is unconfirmed. If hosted on Dung’s own Netlify site, Netlify Forms can accept and store the responses, with optional email notifications. React requires a matching static form definition and a form submission request.
+
+## VPS RSVP API and Google Sheets · 05/11/2026
+
+- Replaced the SMS draft with a same-origin API request. The form confirms only after Google Sheets reports one row written and preserves input on failure.
+- Added a Node.js backend with zero npm dependencies in Desktop/grad. It uses a server-side service account, caches its access token, and appends the UTC timestamp, name, attendance, and note as raw values.
+- Build and lint passed. Local HTTP checks with mocked Google responses covered validation, body limits, authentication caching, successful append and upstream rejection. Live delivery needs the user's Sheet and service account configuration.
+
+## Live RSVP endpoint integration · 05/11/2026
+
+- The hosted invitation cannot use the local development proxy, so the RSVP form now posts directly to `https://140-245-38-247.sslip.io/api/rsvp`. The API permits cross-origin POST requests with JSON. The form sends name, yes/no attendance, and the optional note; it preserves entries on failure and confirms only on a 201 response with `ok: true`.
+- Live checks: CORS preflight returned 204, an invalid submission returned 400, and a labeled test submission (`TEST - Codex`, attendance `no`) returned 201 with `{"ok":true}`. The test creates a response that should be disregarded. This confirms the API response, not independent inspection of the spreadsheet.
+- Production build and lint were run for this change.
+
+## Phone 3D placement investigation · 05/11/2026
+
+- The 3D camera uses the same section positions and offsets at every viewport size. `Stage` and the gallery shrink by viewport aspect ratio, but models in the milestone and campus scenes and decorative models in the invitation scene use unscaled positions. On a portrait screen, these elements can therefore move out of alignment with their scaled surroundings or be cropped.
+- This is a code-level finding; the reported phone, affected scene and observed placement have not yet been confirmed. A targeted visual fix and device verification are pending that information.
+
+## Phone and desktop 3D layout repair · 05/11/2026
+
+- The supplied Android screenshots show the milestone bench detached from its platform, oversized foliage around the campus and invitation, and unreadable 3D date text. The platform and selected card scaled for portrait aspect ratios while surrounding models retained desktop transforms, breaking their relative positions.
+- The milestone, campus and invitation now scale their scene contents with their stages. Portrait layouts use a centered invitation camera, smaller milestone tree, simple ground surfaces, and omit duplicate 3D text and excessive foliage/clouds. Desktop scene content and camera framing are retained.
+- Portrait rendering uses fewer petals, sparkles, and confetti, caps pixel ratio, and omits bloom to reduce rendering work. These changes reduce the configured workload; actual phone performance and GPU behavior still need on-device confirmation. Orientation changes retarget the camera to the current chapter.
+- Chromium software-rendered checks at 390 × 844 navigated the first four chapters without JavaScript errors; screenshots were inspected for placement. Desktop Chromium checks at 1365 × 768 and production build/lint were also run. Software rendering is not a substitute for a physical-phone test.
+
+
+## Background music · 05/11/2026
+
+- Added the supplied MP3 as background music across the opening and all chapters, starting at 4 seconds and returning to that point when the track ends.
+- Browsers can block autoplay with sound. Playback is attempted on load and again on the first page interaction; the accessible speaker button also starts or pauses the music and respects a visitor’s choice to mute it.
+- ESLint and the production build passed. The build retained the existing dependency eval and large bundle warnings. Playback has not been verified in a browser.

@@ -7,6 +7,7 @@ import { Sparkles } from "@react-three/drei";
 import { useMemo } from "react";
 import { bubbleColors } from "../utils/color";
 import JellyCandy from "../components/3d-shapes/JellyCandy";
+import { useThree } from "@react-three/fiber";
 
 // Welcome Section
 export default function WelcomeSection({
@@ -14,6 +15,7 @@ export default function WelcomeSection({
 }: {
   position: [number, number, number];
 }) {
+  const portrait = useThree(({ size }) => size.width < size.height);
   // Create a bunch of bubbles for decoration
   const bubbles = useMemo(() => {
     const arr = Array.from({ length: 30 }, () => {
@@ -53,32 +55,34 @@ export default function WelcomeSection({
         {/* Bubbles */}
         {bubbles}
         {/* Main 3D Text */}
-        <GumText position={[0, 2, 0]} size={1.35} text="07.11.2026" />
+        {!portrait && <GumText position={[0, 2, 0]} size={1.35} text="07.11.2026" />}
         {/* <GumText position={[0, -2, 0]} text="DREAMS" /> */}
 
         {/* Cherry blossom petals */}
-        <CherryBlossomPetals count={50} />
+        <CherryBlossomPetals count={portrait ? 15 : 50} />
 
         {/* Candy elements */}
-        <CandyCluster count={20} />
+        <CandyCluster count={portrait ? 10 : 20} />
 
         {/* Cotton candy clouds */}
+        {!portrait && <>
         {/* Left Side */}
         <CottonCandy position={[-10, -2, -3]} color="#ffccff" scale={2.5} />
         {/* Right Side */}
         <CottonCandy position={[10, -2, -3]} color="#ffccff" scale={2.5} />
         {/* Bottom */}
-        <CottonCandy position={[0, -7, -10]} scale={1.5} color="#ffccff" />
+        {!portrait && <CottonCandy position={[0, -7, -10]} scale={1.5} color="#ffccff" />}
         <CottonCandy position={[5, -7, -5]} scale={1.5} color="#ffccff" />
-        <CottonCandy position={[0, -7, -10]} scale={1.5} color="#ffccff" />
+        {!portrait && <CottonCandy position={[0, -7, -10]} scale={1.5} color="#ffccff" />}
         {/* Top */}
         <CottonCandy position={[-5, 5, -5]} color="#ffccee" scale={1.5} />
         <CottonCandy position={[5, 6, -3]} color="#ffaadd" scale={1.2} />
         <CottonCandy position={[0, 8, -6]} color="#ffbbee" scale={2} />
+        </>}
       </Physics>
 
       {/* Sparkles for magical effect */}
-      <Sparkles count={100} scale={20} size={10} speed={0.3} color="#ffffff" />
+      <Sparkles count={portrait ? 30 : 100} scale={20} size={10} speed={0.3} color="#ffffff" />
     </group>
   );
 }

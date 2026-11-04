@@ -20,10 +20,7 @@ export const album = Object.entries(photos).sort(([a], [b]) => a.localeCompare(b
   url,
   landscape: index === 3 || index === 8,
   caption: [
-    "A quiet patch of green", "On the steps", "A bouquet for the big day",
-    "A path beneath the trees", "A familiar corner", "In the shade",
-    "A walk with flowers", "The graduation cap", "Flowers and the red folder",
-    "A corner of campus",
+    
   ][index],
 }));
 
